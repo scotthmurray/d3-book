@@ -2,10 +2,14 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3 Demo: Sorting visual elements</title>
+		<title>D3 Demo: Sorting visual elements, with CSS-only hover highlight</title>
 		<script type="text/javascript" src="../d3/d3.v2.js"></script>
 		<style type="text/css">
-			/* No style rules here yet */		
+
+			rect:hover {
+				fill: orange;
+			}
+
 		</style>
 	</head>
 	<body>
@@ -49,16 +53,6 @@
 			   })
 			   .attr("fill", function(d) {
 					return "rgb(0, 0, " + (d * 10) + ")";
-			   })
-			   .on("mouseover", function() {
-			   		d3.select(this)
-			   			.attr("fill", "orange");
-			   })
-			   .on("mouseout", function(d) {
-				   d3.select(this)
-				   		.transition()
-				   		.duration(250)
-						.attr("fill", "rgb(0, 0, " + (d * 10) + ")");
 			   })
 			   .on("click", function() {
 			   		sortBars();

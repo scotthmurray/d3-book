@@ -2,10 +2,14 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3 Demo: Sorting visual elements</title>
+		<title>D3 Demo: A browser default tooltip</title>
 		<script type="text/javascript" src="../d3/d3.v2.js"></script>
 		<style type="text/css">
-			/* No style rules here yet */		
+
+			rect:hover {
+				fill: orange;
+			}
+
 		</style>
 	</head>
 	<body>
@@ -50,47 +54,35 @@
 			   .attr("fill", function(d) {
 					return "rgb(0, 0, " + (d * 10) + ")";
 			   })
-			   .on("mouseover", function() {
-			   		d3.select(this)
-			   			.attr("fill", "orange");
-			   })
-			   .on("mouseout", function(d) {
-				   d3.select(this)
-				   		.transition()
-				   		.duration(250)
-						.attr("fill", "rgb(0, 0, " + (d * 10) + ")");
-			   })
 			   .on("click", function() {
 			   		sortBars();
+			   })
+			   .append("title")
+			   .text(function(d) {
+			   		return "This value is " + d;
 			   });
 
-			//Create labels
-			svg.selectAll("text")
-			   .data(dataset)
-			   .enter()
-			   .append("text")
-			   .text(function(d) {
-			   		return d;
-			   })
-			   .attr("text-anchor", "middle")
-			   .attr("x", function(d, i) {
-			   		return xScale(i) + xScale.rangeBand() / 2;
-			   })
-			   .attr("y", function(d) {
-			   		return h - yScale(d) + 14;
-			   })
-			   .attr("font-family", "sans-serif")
-			   .attr("font-size", "11px")
-			   .attr("fill", "white");
+			//Define sort order flag
+			var sortOrder = false;
 			
 			//Define sort function
 			var sortBars = function() {
 
+				//Flip value of sortOrder
+			   	sortOrder = !sortOrder;
+
 				svg.selectAll("rect")
 				   .sort(function(a, b) {
-					   return d3.ascending(a, b);
+				   		if (sortOrder) {
+					   		return d3.ascending(a, b);
+				   		} else {
+					   		return d3.descending(a, b);
+				   		}
 				   	})
 				   .transition()
+				   .delay(function(d, i) {
+					   return i * 50;
+				   })
 				   .duration(1000)
 				   .attr("x", function(d, i) {
 				   		return xScale(i);
