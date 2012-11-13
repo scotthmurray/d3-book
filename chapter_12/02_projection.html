@@ -15,8 +15,13 @@
 			var w = 500;
 			var h = 300;
 
-			//Define default path generator
-			var path = d3.geo.path();
+			//Define map projection
+			var projection = d3.geo.albersUsa()
+								   .translate([w/2, h/2]);
+
+			//Define path generator
+			var path = d3.geo.path()
+							 .projection(projection);
 
 			//Create SVG element
 			var svg = d3.select("body")
