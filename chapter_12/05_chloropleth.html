@@ -27,6 +27,7 @@
 			//Define quantize scale to sort data values into buckets of color
 			var color = d3.scale.quantize()
 								.range(["rgb(237,248,233)","rgb(186,228,179)","rgb(116,196,118)","rgb(49,163,84)","rgb(0,109,44)"]);
+								//Colors taken from colorbrewer.js, included in the D3 download
 
 			//Create SVG element
 			var svg = d3.select("body")
@@ -39,18 +40,15 @@
 
 				//Set input domain for color scale
 				color.domain([
-					d3.min(data, function(d) {
-						return d.value;
-					}), 
-					d3.max(data, function(d) {
-						return d.value;
-					})
+					d3.min(data, function(d) { return d.value; }), 
+					d3.max(data, function(d) { return d.value; })
 				]);
 
 				//Load in GeoJSON data
 				d3.json("us-states.json", function(json) {
 
 					//Merge the ag. data and GeoJSON
+					//Loop through once for each ag. data value
 					for (var i = 0; i < data.length; i++) {
 				
 						var dataState = data[i].state;				//Grab state name
