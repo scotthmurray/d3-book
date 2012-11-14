@@ -1,48 +1,49 @@
-AL, 1.1791
-AR, 1.3705
-AZ, 1.3847
-CA, 1.7979
-CO, 1.0325
-CT, 1.3209
-DE, 1.4345
-FL, 1.6304
-GA, 1.3891
-IA, 1.5297
-ID, 1.4285
-IL, 1.5297
-IN, 1.4220
-KS, 1.0124
-KY, 0.9403
-LA, 0.9904
-MA, 1.3877
-MD, 1.2457
-ME, 1.1458
-MI, 1.1058
-MN, 1.2359
-MO, 1.0212
-MS, 1.1306
-MT, 0.8145
-NC, 1.3554
-ND, 1.0278
-NE, 1.1619
-NH, 1.0204
-NJ, 1.2831
-NM, 0.8925
-NV, 0.9640
-NY, 1.1327
-OH, 1.2075
-OK, 0.7693
-OR, 1.3154
-PA, 1.0601
-RI, 1.4192
-SC, 1.1247
-SD, 1.0760
-TN, 0.7648
-TX, 0.8873
-UT, 0.9638
-VA, 0.9660
-VT, 1.0762
-WA, 1.1457
-WI, 1.1130
-WV, 0.5777
-WY, 0.5712
+state,value
+Alabama,1.1791
+Arkansas,1.3705
+Arizona,1.3847
+California,1.7979
+Colorado,1.0325
+Connecticut,1.3209
+Delaware,1.4345
+Florida,1.6304
+Georgia,1.3891
+Iowa,1.5297
+Idaho,1.4285
+Illinois,1.5297
+Indiana,1.4220
+Kansas,1.0124
+Kentucky,0.9403
+Louisiana,0.9904
+Maine,1.3877
+Maryland,1.2457
+Massachusetts,1.1458
+Michigan,1.1058
+Minnesota,1.2359
+Missouri,1.0212
+Mississippi,1.1306
+Montana,0.8145
+North Carolina,1.3554
+North Dakota,1.0278
+Nebraska,1.1619
+New Hampshire,1.0204
+New Jersey,1.2831
+New Mexico,0.8925
+Nevada,0.9640
+New York,1.1327
+Ohio,1.2075
+Oklahoma,0.7693
+Oregon,1.3154
+Pennsylvania,1.0601
+Rhode Island,1.4192
+South Carolina,1.1247
+South Dakota,1.0760
+Tennessee,0.7648
+Texas,0.8873
+Utah,0.9638
+Virginia,0.9660
+Vermont,1.0762
+Washington,1.1457
+Wisconsin,1.1130
+West Virginia,0.5777
+Wyoming,0.5712
