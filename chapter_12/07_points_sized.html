@@ -89,6 +89,28 @@
 						   		return "#ccc";
 					   		}
 					   });
+
+					//Load in cities data
+					d3.csv("us-cities.csv", function(data) {
+						
+						svg.selectAll("circle")
+						   .data(data)
+						   .enter()
+						   .append("circle")
+						   .attr("cx", function(d) {
+							   return projection([d.lon, d.lat])[0];
+						   })
+						   .attr("cy", function(d) {
+							   return projection([d.lon, d.lat])[1];
+						   })
+						   .attr("r", function(d) {
+								return parseInt(d.population) * 0.000004;
+						   })
+						   .style("fill", "yellow")
+						   .style("opacity", 0.75);
+						
+					});
+
 			
 				});
 			

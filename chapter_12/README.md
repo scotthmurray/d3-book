@@ -13,3 +13,12 @@ This file consists of data provided by the USDA, and is in the public domain.  T
 
 “Table 19. Indices of total factor productivity by State, 1960-2004”
 http://ers.usda.gov/data-products/agricultural-productivity-in-the-us.aspx
+
+
+
+### us-cities.csv
+
+File derived from data provided by the United States Census Bureau, and integrated with geocoding data from: http://www.gpsvisualizer.com/geocoder/
+
+“Table 1. Annual Estimates of the Resident Population for Incorporated Places Over 50,000, Ranked by July 1, 2011 Population: April 1, 2010 to July 1, 2011”
+http://www.census.gov/popest/data/cities/totals/2011/tables/SUB-EST2011-01.csv

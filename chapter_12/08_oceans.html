@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 Demo: GeoJSON</title>
+		<script type="text/javascript" src="../d3/d3.v2.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 500;
+			var h = 300;
+
+			//Define map projection
+			var projection = d3.geo.albersUsa()
+								   .translate([w/2, h/2])
+								   .scale([500]);
+
+			//Define path generator
+			var path = d3.geo.path()
+							 .projection(projection);
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Load in GeoJSON data
+			d3.json("oceans.json", function(json) {
+				
+				//Bind data and create one path per GeoJSON feature
+				svg.selectAll("path")
+				   .data(json.features)
+				   .enter()
+				   .append("path")
+				   .attr("d", path)
+				   .style("fill", "steelblue");
+		
+			});
+			
+		</script>
+	</body>
+</html>
