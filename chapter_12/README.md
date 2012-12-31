@@ -11,7 +11,7 @@ https://github.com/mbostock/d3/blob/master/examples/data/README.md
 
 This file consists of data provided by the USDA, and is in the public domain.  The values report agricultural productivty, by state, for 2004.  Values are relative to an arbitrary baseline of the productivity of the state of Alabama in 1996 (1.0).
 
-“Table 19. Indices of total factor productivity by State, 1960-2004”
+"Table 19. Indices of total factor productivity by State, 1960-2004"
 http://ers.usda.gov/data-products/agricultural-productivity-in-the-us.aspx
 
 
@@ -20,5 +20,5 @@ http://ers.usda.gov/data-products/agricultural-productivity-in-the-us.aspx
 
 File derived from data provided by the United States Census Bureau, and integrated with geocoding data from: http://www.gpsvisualizer.com/geocoder/
 
-“Table 1. Annual Estimates of the Resident Population for Incorporated Places Over 50,000, Ranked by July 1, 2011 Population: April 1, 2010 to July 1, 2011”
+"Table 1. Annual Estimates of the Resident Population for Incorporated Places Over 50,000, Ranked by July 1, 2011 Population: April 1, 2010 to July 1, 2011"
 http://www.census.gov/popest/data/cities/totals/2011/tables/SUB-EST2011-01.csv
