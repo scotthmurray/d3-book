@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>D3 Test</title>
-		<script type="text/javascript" src="../d3/d3.v2.js"></script>
+		<script type="text/javascript" src="../d3/d3.v3.js"></script>
 	</head>
 	<body>
 		<script type="text/javascript">
@@ -14,7 +14,7 @@
 				.data(dataset)
 				.enter()
 				.append("p")
-				.text("New paragraph!");
+				.text(function(d) { return d; });
 			
 		</script>
 	</body>

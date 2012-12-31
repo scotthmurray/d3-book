@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>D3 Test</title>
-		<script type="text/javascript" src="../d3/d3.v2.js"></script>
+		<script type="text/javascript" src="../d3/d3.v3.js"></script>
 	</head>
 	<body>
 		<script type="text/javascript">
@@ -14,7 +14,10 @@
 				.data(dataset)
 				.enter()
 				.append("p")
-				.text(function(d) { return d; });
+				.text(function(d) {
+					return "I can count up to " + d;
+				})
+				.style("color", "red");
 			
 		</script>
 	</body>
