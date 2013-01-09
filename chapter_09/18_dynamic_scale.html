@@ -85,7 +85,7 @@
 					var maxValue = 100;											//Highest possible new value
 					dataset = [];  						 				 		//Initialize empty array
 					for (var i = 0; i < numValues; i++) {				 		//Loop numValues times
-						var newNumber = Math.round(Math.random() * maxValue);	//New random integer (0-100)
+						var newNumber = Math.floor(Math.random() * maxValue);	//New random integer (0-100)
 						dataset.push(newNumber);			 			 		//Add new number to array
 					}
 					

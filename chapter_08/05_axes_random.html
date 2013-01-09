@@ -43,8 +43,8 @@
 			var xRange = Math.random() * 1000;	//Max range of new x values
 			var yRange = Math.random() * 1000;	//Max range of new y values
 			for (var i = 0; i < numDataPoints; i++) {					//Loop numDataPoints times
-				var newNumber1 = Math.round(Math.random() * xRange);	//New random integer
-				var newNumber2 = Math.round(Math.random() * yRange);	//New random integer
+				var newNumber1 = Math.floor(Math.random() * xRange);	//New random integer
+				var newNumber2 = Math.floor(Math.random() * yRange);	//New random integer
 				dataset.push([newNumber1, newNumber2]);					//Add new number to array
 			}
 

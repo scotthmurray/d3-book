@@ -36,8 +36,8 @@
 			var numDataPoints = 50;										//Number of dummy data points to create
 			var maxRange = Math.random() * 1000;						//Max range of new values
 			for (var i = 0; i < numDataPoints; i++) {					//Loop numDataPoints times
-				var newNumber1 = Math.round(Math.random() * maxRange);	//New random integer
-				var newNumber2 = Math.round(Math.random() * maxRange);	//New random integer
+				var newNumber1 = Math.floor(Math.random() * maxRange);	//New random integer
+				var newNumber2 = Math.floor(Math.random() * maxRange);	//New random integer
 				dataset.push([newNumber1, newNumber2]);					//Add new number to array
 			}
 
@@ -104,8 +104,8 @@
 					var maxRange = Math.random() * 1000;						//Max range of new values
 					dataset = [];  						 				 		//Initialize empty array
 					for (var i = 0; i < numValues; i++) {				 		//Loop numValues times
-						var newNumber1 = Math.round(Math.random() * maxRange);	//New random integer
-						var newNumber2 = Math.round(Math.random() * maxRange);	//New random integer
+						var newNumber1 = Math.floor(Math.random() * maxRange);	//New random integer
+						var newNumber2 = Math.floor(Math.random() * maxRange);	//New random integer
 						dataset.push([newNumber1, newNumber2]);					//Add new number to array
 					}
 					
