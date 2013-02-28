@@ -51,8 +51,11 @@
 					//Loop through once for each ag. data value
 					for (var i = 0; i < data.length; i++) {
 				
-						var dataState = data[i].state;				//Grab state name
-						var dataValue = parseFloat(data[i].value);	//Grab data value, and convert from string to float
+						//Grab state name
+						var dataState = data[i].state;
+						
+						//Grab data value, and convert from string to float
+						var dataValue = parseFloat(data[i].value);
 				
 						//Find the corresponding state inside the GeoJSON
 						for (var j = 0; j < json.features.length; j++) {
