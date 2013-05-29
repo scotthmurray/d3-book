@@ -115,13 +115,7 @@
 						.attr("x", function(d, i) {				//Set new x position, based on the updated xScale
 							return xScale(i);
 						})
-						.attr("y", function(d) {				//Set new y position, based on the updated yScale
-							return h - yScale(d);
-						})
-						.attr("width", xScale.rangeBand())		//Set new width value, based on the updated xScale
-						.attr("height", function(d) {			//Set new height value, based on the updated yScale
-							return yScale(d);
-						});
+						.attr("width", xScale.rangeBand());		//Set new width value, based on the updated xScale
 
 
 
