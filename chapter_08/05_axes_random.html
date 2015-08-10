@@ -5,14 +5,14 @@
 		<title>D3: Dynamic axes generated based on min/max values of randomized data</title>
 		<script type="text/javascript" src="../d3/d3.v3.js"></script>
 		<style type="text/css">
-			
+
 			.axis path,
 			.axis line {
 				fill: none;
 				stroke: black;
 				shape-rendering: crispEdges;
 			}
-			
+
 			.axis text {
 				font-family: sans-serif;
 				font-size: 11px;
@@ -27,7 +27,7 @@
 			var w = 500;
 			var h = 300;
 			var padding = 30;
-			
+
 			/*
 			//Static dataset
 			var dataset = [
@@ -36,7 +36,7 @@
 							[600, 150]
 						  ];
 			*/
-			
+
 			//Dynamic, random dataset
 			var dataset = [];					//Initialize empty array
 			var numDataPoints = 50;				//Number of dummy data points to create
@@ -111,13 +111,13 @@
 			   .attr("font-family", "sans-serif")
 			   .attr("font-size", "11px")
 			   .attr("fill", "red");
-			
+
 			//Create X axis
 			svg.append("g")
 				.attr("class", "axis")
 				.attr("transform", "translate(0," + (h - padding) + ")")
 				.call(xAxis);
-			
+
 			//Create Y axis
 			svg.append("g")
 				.attr("class", "axis")

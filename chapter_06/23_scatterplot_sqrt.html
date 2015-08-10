@@ -5,7 +5,7 @@
 		<title>D3: A simple scatterplot, setting radii from data</title>
 		<script type="text/javascript" src="../d3/d3.v3.js"></script>
 		<style type="text/css">
-			/* No style rules here yet */		
+			/* No style rules here yet */
 		</style>
 	</head>
 	<body>
@@ -14,12 +14,12 @@
 			//Width and height
 			var w = 500;
 			var h = 100;
-			
+
 			var dataset = [
 							[5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
 							[410, 12], [475, 44], [25, 67], [85, 21], [220, 88]
 						  ];
-	
+
 			//Create SVG element
 			var svg = d3.select("body")
 						.append("svg")
@@ -37,9 +37,10 @@
 			   		return d[1];
 			   })
 			   .attr("r", function(d) {
-			   		return Math.sqrt(h - d[1]);
+								return Math.sqrt(h - d[1]);
+						// return 3
 			   });
-			
+
 		</script>
 	</body>
 </html>
