@@ -5,19 +5,19 @@
 		<title>D3: Drawing SVG circles with data</title>
 		<script type="text/javascript" src="../d3/d3.v3.js"></script>
 		<style type="text/css">
-			/* No style rules here yet */		
+			/* No style rules here yet */
 		</style>
 	</head>
 	<body>
 		<script type="text/javascript">
-			
+
 			//Width and height
 			var w = 500;
 			var h = 50;
-			
+
 			//Data
 			var dataset = [ 5, 10, 15, 20, 25 ];
-			
+
 			//Create SVG element
 			var svg = d3.select("body")
 						.append("svg")
@@ -30,6 +30,7 @@
 			    .append("circle");
 
 			circles.attr("cx", function(d, i) {
+				console.log(i);
 						return (i * 50) + 25;
 					})
 				   .attr("cy", h/2)
