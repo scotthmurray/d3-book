@@ -21,8 +21,8 @@
 			//Create SVG element
 			var svg = d3.select("body")
 						.append("svg")
-						.attr("width", 500)
-						.attr("height", 50);
+						.attr("width", w)
+						.attr("height", h);
 
 			var circles = svg.selectAll("circle")
 			    .data(dataset)
