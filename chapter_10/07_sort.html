@@ -32,6 +32,13 @@
 						.attr("width", w)
 						.attr("height", h);
 
+			var over = function() {d3.select(this).attr("fill", "orange")}
+			var out = function(d) {
+                d3.select(this)
+                    .transition()
+                    .duration(250)
+                    .attr("fill", "rgb(0, 0, " + (d * 10) + ")");
+           };
 			//Create bars
 			svg.selectAll("rect")
 			   .data(dataset)
@@ -50,16 +57,8 @@
 			   .attr("fill", function(d) {
 					return "rgb(0, 0, " + (d * 10) + ")";
 			   })
-			   .on("mouseover", function() {
-			   		d3.select(this)
-			   			.attr("fill", "orange");
-			   })
-			   .on("mouseout", function(d) {
-				   d3.select(this)
-				   		.transition()
-				   		.duration(250)
-						.attr("fill", "rgb(0, 0, " + (d * 10) + ")");
-			   })
+			   .on("mouseover", over)
+			   .on("mouseout", out)
 			   .on("click", function() {
 			   		sortBars();
 			   });
@@ -92,11 +91,23 @@
 				   	})
 				   .transition()
 				   .duration(1000)
+                   .each("start", function() {
+                        d3.select(this)
+                            .on("mouseover", null)
+                            .on("mouseout", null);
+                   })
 				   .attr("x", function(d, i) {
 				   		return xScale(i);
-				   });
-
-			};			
+				   })
+                   .attr("fill", function(d) {
+                        return "rgb(0, 0, " + (d * 10) + ")";
+                   })
+                   .each("end", function() {
+                        d3.select(this)
+                            .on("mouseover", over)
+                            .on("mouseout", out)
+                   });
+			};
 			
 		</script>
 	</body>
