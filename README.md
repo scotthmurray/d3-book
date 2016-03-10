@@ -15,5 +15,3 @@ These are sample code files to accompany the book “Interactive Data Visualizat
 This version is **in progress for the second edition**.  You probably don’t want this version, as it will only be of interest to Scott.
 
 Check [the release page](https://github.com/alignedleft/d3-book/releases) to download version 1.0, which matches code shown in the first edition of the book, published March 2013.
-
-Test commit
