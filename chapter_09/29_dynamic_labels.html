@@ -109,18 +109,27 @@
 					
 					//Decide what to do next
 					if (paragraphID == "add") {
-						//Add a data value
-						var maxValue = 25;
-						var newNumber = Math.floor(Math.random() * maxValue);
-						var lastKeyValue = dataset[dataset.length - 1].key;
-						console.log(lastKeyValue);
-						dataset.push({
-							key: lastKeyValue + 1,
-							value: newNumber
-						});
+					//Add a data value
+				            var maxValue = 25;
+				            var newNumber = Math.floor(Math.random() * maxValue);
+				
+				            if (dataset.length === 0) {
+				              dataset.push({
+				                key: 0,
+				                value: newNumber
+				              });
+				              console.log(dataset.length);
+				            }else {
+				              var lastKeyValue = dataset[dataset.length - 1].key;
+  						dataset.push({
+  							key: lastKeyValue + 1,
+  							value: newNumber
+  						});
+				              console.log(dataset.length);
+            				    }
 					} else {
 						//Remove a value
-						dataset.shift();	//Remove one value from dataset
+						dataset.shift(); //Remove one value from dataset
 					}
 					
 					//Update scale domains
@@ -195,7 +204,10 @@
 						.duration(500)
 						.attr("x", function(d, i) {
 							return xScale(i) + xScale.rangeBand() / 2;
-						});
+						})
+						.attr("y", function(d) {
+            						return h - yScale(d.value) + 14;
+        					});
 
 					//Exit…
 					labels.exit()
