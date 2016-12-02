@@ -44,7 +44,7 @@
 							.domain(d3.range(dataset.length))
 							.rangeRoundBands([0, w], 0.05);
 
-			var yScale = d3.scale.linear()
+			var yScale = d3.scaleLinear()
 							.domain([0, d3.max(dataset, function(d) { return d.value; })])
 							.range([0, h]);
 			

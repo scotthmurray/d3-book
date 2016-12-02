@@ -23,15 +23,15 @@
 						  ];
 
 			//Create scale functions
-			var xScale = d3.scale.linear()
+			var xScale = d3.scaleLinear()
 								 .domain([0, d3.max(dataset, function(d) { return d[0]; })])
 								 .range([padding, w - padding * 2]);
 
-			var yScale = d3.scale.linear()
+			var yScale = d3.scaleLinear()
 								 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
 								 .range([h - padding, padding]);
 
-			var rScale = d3.scale.linear()
+			var rScale = d3.scaleLinear()
 								 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
 								 .range([2, 5]);
 

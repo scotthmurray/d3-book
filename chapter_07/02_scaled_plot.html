@@ -21,11 +21,11 @@
 						  ];
 
 			//Create scale functions
-			var xScale = d3.scale.linear()
+			var xScale = d3.scaleLinear()
 								 .domain([0, d3.max(dataset, function(d) { return d[0]; })])
 								 .range([0, w]);
 
-			var yScale = d3.scale.linear()
+			var yScale = d3.scaleLinear()
 								 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
 								 .range([0, h]);
 	
