@@ -195,7 +195,8 @@
 						.duration(500)
 						.attr("x", function(d, i) {
 							return xScale(i) + xScale.rangeBand() / 2;
-						});
+						})
+                                                .attr('y', d => h - yScale(d.value) + 14);
 
 					//Exit…
 					labels.exit()
