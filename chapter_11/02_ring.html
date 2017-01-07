@@ -25,14 +25,14 @@
 
 			var outerRadius = w / 2;
 			var innerRadius = w / 3;
-			var arc = d3.svg.arc()
-							.innerRadius(innerRadius)
-							.outerRadius(outerRadius);
+			var arc = d3.arc()
+						.innerRadius(innerRadius)
+						.outerRadius(outerRadius);
 			
-			var pie = d3.layout.pie();
+			var pie = d3.pie();
 			
 			//Easy colors accessible via a 10-step ordinal scale
-			var color = d3.scale.category10();
+			var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 			//Create SVG element
 			var svg = d3.select("body")

@@ -5,19 +5,7 @@
 		<title>D3: Introducing the clipping path</title>
 		<script type="text/javascript" src="../d3/d3.v4.js"></script>
 		<style type="text/css">
-			
-			.axis path,
-			.axis line {
-				fill: none;
-				stroke: black;
-				shape-rendering: crispEdges;
-			}
-			
-			.axis text {
-				font-family: sans-serif;
-				font-size: 11px;
-			}
-
+			/* No style rules here yet */
 		</style>
 	</head>
 	<body>
@@ -51,15 +39,13 @@
 								 .range([h - padding, padding]);
 
 			//Define X axis
-			var xAxis = d3.svg.axis()
+			var xAxis = d3.axisBottom()
 							  .scale(xScale)
-							  .orient("bottom")
 							  .ticks(5);
 
 			//Define Y axis
-			var yAxis = d3.svg.axis()
+			var yAxis = d3.axisLeft()
 							  .scale(yScale)
-							  .orient("left")
 							  .ticks(5);
 
 			//Create SVG element
@@ -130,7 +116,7 @@
 					   .data(dataset)
 					   .transition()
 					   .duration(1000)
-					   .each("start", function() {
+					   .on("start", function() {
 						   d3.select(this)
 						     .attr("fill", "magenta")
 						     .attr("r", 7);
@@ -141,7 +127,7 @@
 					   .attr("cy", function(d) {
 					   		return yScale(d[1]);
 					   })
-					   .each("end", function() {
+					   .on("end", function() {
 						   d3.select(this)
 						     .transition()
 						     .duration(1000)

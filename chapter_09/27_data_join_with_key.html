@@ -38,11 +38,12 @@
 							{ key: 17, value: 18 },
 							{ key: 18, value: 23 },
 							{ key: 19, value: 25 } ];
-			
-			var xScale = d3.scale.ordinal()
-							.domain(d3.range(dataset.length))
-							.rangeRoundBands([0, w], 0.05);
 
+			var xScale = d3.scaleBand()
+							.domain(d3.range(dataset.length))
+							.range([0, w])
+							.paddingInner(0.05);
+			
 			var yScale = d3.scaleLinear()
 							.domain([0, d3.max(dataset, function(d) { return d.value; })])
 							.range([0, h]);
@@ -69,7 +70,7 @@
 			   .attr("y", function(d) {
 			   		return h - yScale(d.value);
 			   })
-			   .attr("width", xScale.rangeBand())
+			   .attr("width", xScale.bandwidth())
 			   .attr("height", function(d) {
 			   		return yScale(d.value);
 			   })
@@ -87,7 +88,7 @@
 			   })
 			   .attr("text-anchor", "middle")
 			   .attr("x", function(d, i) {
-			   		return xScale(i) + xScale.rangeBand() / 2;
+			   		return xScale(i) + xScale.bandwidth() / 2;
 			   })
 			   .attr("y", function(d) {
 			   		return h - yScale(d.value) + 14;
@@ -121,16 +122,15 @@
 						.attr("y", function(d) {
 							return h - yScale(d.value);
 						})
-						.attr("width", xScale.rangeBand())
+						.attr("width", xScale.bandwidth())
 						.attr("height", function(d) {
 							return yScale(d.value);
 						})
 						.attr("fill", function(d) {
 							return "rgb(0, 0, " + (d.value * 10) + ")";
-						});
-
-					//Update…
-					bars.transition()
+						})
+						.merge(bars)	//Update…
+						.transition()
 						.duration(500)
 						.attr("x", function(d, i) {
 							return xScale(i);
@@ -138,7 +138,7 @@
 						.attr("y", function(d) {
 							return h - yScale(d.value);
 						})
-						.attr("width", xScale.rangeBand())
+						.attr("width", xScale.bandwidth())
 						.attr("height", function(d) {
 							return yScale(d.value);
 						});
@@ -147,7 +147,7 @@
 					bars.exit()
 						.transition()
 						.duration(500)
-						.attr("x", -xScale.rangeBand())  // <-- Exit stage left
+						.attr("x", -xScale.bandwidth())  // <-- Exit stage left
 						.remove();
 
 
@@ -164,7 +164,7 @@
 					   		return d.value;
 					   })
 					   .attr("x", function(d, i) {
-							return xScale(i) + xScale.rangeBand() / 2;
+							return xScale(i) + xScale.bandwidth() / 2;
 					   })
 					   .attr("y", function(d) {
 							return h - yScale(d.value) + 14;

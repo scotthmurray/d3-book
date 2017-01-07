@@ -47,15 +47,22 @@
 			};
 
 			//Initialize a default force layout, using the nodes and edges in dataset
-			var force = d3.layout.force()
-								 .nodes(dataset.nodes)
-								 .links(dataset.edges)
-								 .size([w, h])
-								 .linkDistance([50])
-								 .charge([-100])
-								 .start();
+			// var force = d3.forceSimulation()
+			// 			  .nodes(dataset.nodes)
+			// 			  .links(dataset.edges)
+			// 			  .size([w, h])
+			// 			  .linkDistance([50])
+			// 			  .charge([-100])
+			// 			  .start();
 
-			var colors = d3.scale.category10();
+
+			var force = d3.forceSimulation(dataset.nodes)
+							.force("charge", d3.forceManyBody())
+							.force("link", d3.forceLink(dataset.edges))
+							.force("center", d3.forceCenter().x(w/2).y(h/2));
+
+
+			var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
 			//Create SVG element
 			var svg = d3.select("body")
@@ -80,7 +87,16 @@
 				.style("fill", function(d, i) {
 					return colors(i);
 				})
-				.call(force.drag);
+				.call(d3.drag()
+					.on("start", dragstarted)
+					.on("drag", dragged)
+					.on("end", dragended));
+
+			//Add a simple tooltip
+			nodes.append("title")
+				 .text(function(d) {
+					return d.name;
+				 });
 			
 			//Every time the simulation "ticks", this will be called
 			force.on("tick", function() {
@@ -95,6 +111,23 @@
 	
 			});
 
+
+function dragstarted(d) {
+  if (!d3.event.active) force.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) force.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
 
 		</script>
 	</body>

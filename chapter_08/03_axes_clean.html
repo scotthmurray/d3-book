@@ -5,19 +5,7 @@
 		<title>D3: Axis with fewer ticks</title>
 		<script type="text/javascript" src="../d3/d3.v4.js"></script>
 		<style type="text/css">
-			
-			.axis path,
-			.axis line {
-				fill: none;
-				stroke: black;
-				shape-rendering: crispEdges;
-			}
-			
-			.axis text {
-				font-family: sans-serif;
-				font-size: 11px;
-			}
-
+			/* No style rules here yet */
 		</style>
 	</head>
 	<body>
@@ -48,9 +36,8 @@
 								 .range([2, 5]);
 
 			//Define X axis
-			var xAxis = d3.svg.axis()
+			var xAxis = d3.axisBottom()
 							  .scale(xScale)
-							  .orient("bottom")
 							  .ticks(5);
 
 			//Create SVG element
