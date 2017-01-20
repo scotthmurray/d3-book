@@ -47,15 +47,6 @@
 			};
 
 			//Initialize a default force layout, using the nodes and edges in dataset
-			// var force = d3.forceSimulation()
-			// 			  .nodes(dataset.nodes)
-			// 			  .links(dataset.edges)
-			// 			  .size([w, h])
-			// 			  .linkDistance([50])
-			// 			  .charge([-100])
-			// 			  .start();
-
-
 			var force = d3.forceSimulation(dataset.nodes)
 							.force("charge", d3.forceManyBody())
 							.force("link", d3.forceLink(dataset.edges))
@@ -87,7 +78,7 @@
 				.style("fill", function(d, i) {
 					return colors(i);
 				})
-				.call(d3.drag()
+				.call(d3.drag()  //Define what to do on drag events
 					.on("start", dragstarted)
 					.on("drag", dragged)
 					.on("end", dragended));
@@ -111,23 +102,23 @@
 	
 			});
 
+			//Define drag event functions
+			function dragstarted(d) {
+				if (!d3.event.active) force.alphaTarget(0.3).restart();
+				d.fx = d.x;
+				d.fy = d.y;
+			}
 
-function dragstarted(d) {
-  if (!d3.event.active) force.alphaTarget(0.3).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
+			function dragged(d) {
+				d.fx = d3.event.x;
+				d.fy = d3.event.y;
+			}
 
-function dragged(d) {
-  d.fx = d3.event.x;
-  d.fy = d3.event.y;
-}
-
-function dragended(d) {
-  if (!d3.event.active) force.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
+			function dragended(d) {
+				if (!d3.event.active) force.alphaTarget(0);
+				d.fx = null;
+				d.fy = null;
+			}
 
 		</script>
 	</body>

@@ -16,12 +16,12 @@
 			var h = 300;
 
 			//Define map projection
-			var projection = d3.geo.mercator()
+			var projection = d3.geoMercator()
 								   .translate([w/2, h/2])
-								   .scale([500]);
+								   .scale([w * 0.16]);
 
 			//Define path generator
-			var path = d3.geo.path()
+			var path = d3.geoPath()
 							 .projection(projection);
 
 			//Create SVG element

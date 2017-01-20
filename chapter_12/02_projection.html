@@ -16,11 +16,11 @@
 			var h = 300;
 
 			//Define map projection
-			var projection = d3.geo.albersUsa()
+			var projection = d3.geoAlbersUsa()
 								   .translate([w/2, h/2]);
 
 			//Define path generator
-			var path = d3.geo.path()
+			var path = d3.geoPath()
 							 .projection(projection);
 
 			//Create SVG element
