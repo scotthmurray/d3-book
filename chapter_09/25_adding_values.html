@@ -109,7 +109,7 @@
 						.attr("fill", function(d) {				//Sets the fill value
 							return "rgb(0, 0, " + (d * 10) + ")";
 						})
-						.merge(bars)	//Update…
+						.merge(bars)							//Merges the enter selection with the update selection
 						.transition()							//Initiate a transition on all elements in the update selection (all rects)
 						.duration(500)
 						.attr("x", function(d, i) {				//Set new x position, based on the updated xScale
