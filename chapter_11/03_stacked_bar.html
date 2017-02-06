@@ -82,12 +82,6 @@
 					return yScale(d[1]);
 				})
 				.attr("width", xScale.bandwidth());
-
-			//Add a simple tooltip
-			rects.append("title")
-				 .text(function(d) {
-					return d[1] - d[0];
-				 });
 						
 		</script>
 	</body>
