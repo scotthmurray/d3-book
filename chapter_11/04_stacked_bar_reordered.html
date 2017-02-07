@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Stack layout stacked bar chart</title>
+		<title>D3: Stack layout stacked bar chart, reordered</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 			/* No style rules here yet */
@@ -26,7 +26,15 @@
 
 			//Set up stack method
 			var stack = d3.stack()
-						  .keys([ "apples", "oranges", "grapes" ]);
+						  .keys([ "apples", "oranges", "grapes" ])
+						  .order(d3.stackOrderDescending);  // <-- flipped stacking order
+
+						  // Also try:
+						  // d3.stackOrderNone (the default, uses the order in which keys are specified)
+						  // d3.stackOrderReverse
+						  // d3.stackOrderAscending
+						  // d3.stackOrderDescending
+
 
 			//Data, stacked
 			var series = stack(dataset);
