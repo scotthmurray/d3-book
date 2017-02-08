@@ -46,12 +46,11 @@
 				]
 			};
 
-			//Initialize a default force layout, using the nodes and edges in dataset
+			//Initialize a simple force layout, using the nodes and edges in dataset
 			var force = d3.forceSimulation(dataset.nodes)
-							.force("charge", d3.forceManyBody())
-							.force("link", d3.forceLink(dataset.edges))
-							.force("center", d3.forceCenter().x(w/2).y(h/2));
-
+						  .force("charge", d3.forceManyBody())
+						  .force("link", d3.forceLink(dataset.edges))
+						  .force("center", d3.forceCenter().x(w/2).y(h/2));
 
 			var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
