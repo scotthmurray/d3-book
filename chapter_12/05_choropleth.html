@@ -27,7 +27,8 @@
 			//Define quantize scale to sort data values into buckets of color
 			var color = d3.scaleQuantize()
 								.range(["rgb(237,248,233)","rgb(186,228,179)","rgb(116,196,118)","rgb(49,163,84)","rgb(0,109,44)"]);
-								//Colors taken from colorbrewer.js, included in the D3 download
+								//Colors derived from ColorBrewer, by Cynthia Brewer, and included in
+								//https://github.com/d3/d3-scale-chromatic
 
 			//Create SVG element
 			var svg = d3.select("body")

@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Scaling the AlbersUSA projection</title>
+		<title>D3: Scaling the Albers USA projection</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 			/* No style rules here yet */		
@@ -17,8 +17,8 @@
 
 			//Define map projection
 			var projection = d3.geoAlbersUsa()
-								   .translate([w/2, h/2])
-								   .scale([500]);
+							   .translate([w/2, h/2])
+							   .scale([500]);
 
 			//Define path generator
 			var path = d3.geoPath()
