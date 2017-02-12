@@ -111,8 +111,9 @@
 					//Decide what to do next
 					if (paragraphID == "add") {
 						//Add a data value
-						var maxValue = 25;
-						var newNumber = Math.floor(Math.random() * maxValue);
+						var minValue = 2;
+						var maxValue = 25 - minValue;
+						var newNumber = Math.floor(Math.random() * maxValue) + minValue;
 						var lastKeyValue = dataset[dataset.length - 1].key;
 						dataset.push({
 							key: lastKeyValue + 1,
