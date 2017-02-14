@@ -29,6 +29,9 @@
 								.range(["rgb(237,248,233)","rgb(186,228,179)","rgb(116,196,118)","rgb(49,163,84)","rgb(0,109,44)"]);
 								//Colors taken from colorbrewer.js, included in the D3 download
 
+			//Number formatting for population values
+			var formatAsThousands = d3.format(",");  //e.g. converts 123456 to "123,456"
+
 			//Create SVG element
 			var svg = d3.select("body")
 						.append("svg")
@@ -105,7 +108,13 @@
 						   })
 						   .attr("r", 5)
 						   .style("fill", "yellow")
-						   .style("opacity", 0.75);
+						   .style("stroke", "gray")
+						   .style("stroke-width", 0.25)
+						   .style("opacity", 0.75)
+						   .append("title")			//Simple tooltip
+						   .text(function(d) {
+								return d.place + ": Pop. " + formatAsThousands(d.population);
+						   });
 						
 					});
 
