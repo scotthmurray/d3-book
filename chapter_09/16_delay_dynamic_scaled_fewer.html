@@ -51,7 +51,7 @@
 			   		return yScale(d);
 			   })
 			   .attr("fill", function(d) {
-					return "rgb(0, 0, " + (d * 10) + ")";
+					return "rgb(0, 0, " + Math.round(d * 10) + ")";
 			   });
 
 			//Create labels
@@ -98,7 +98,7 @@
 					   		return yScale(d);
 					   })
 					   .attr("fill", function(d) {
-							return "rgb(0, 0, " + (d * 10) + ")";
+							return "rgb(0, 0, " + Math.round(d * 10) + ")";
 					   });
 
 					//Update all labels

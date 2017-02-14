@@ -52,7 +52,7 @@
 			   		return yScale(d);
 			   })
 			   .attr("fill", function(d) {
-					return "rgb(0, 0, " + (d * 10) + ")";
+					return "rgb(0, 0, " + Math.round(d * 10) + ")";
 			   });
 
 			//Create labels
@@ -105,7 +105,7 @@
 							return yScale(d);
 						})
 						.attr("fill", function(d) {				//Sets the fill value
-							return "rgb(0, 0, " + (d * 10) + ")";
+							return "rgb(0, 0, " + Math.round(d * 10) + ")";
 						})
 						.merge(bars)							//Merges the enter selection with the update selection
 						.transition()							//Initiate a transition on all elements in the update selection (all rects)
