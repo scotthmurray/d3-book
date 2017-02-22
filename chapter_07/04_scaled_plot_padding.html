@@ -36,6 +36,7 @@
 						.attr("width", w)
 						.attr("height", h);
 
+			//Create circles
 			svg.selectAll("circle")
 			   .data(dataset)
 			   .enter()
@@ -50,6 +51,7 @@
 			   		return Math.sqrt(h - d[1]);
 			   });
 
+			//Create labels
 			svg.selectAll("text")
 			   .data(dataset)
 			   .enter()

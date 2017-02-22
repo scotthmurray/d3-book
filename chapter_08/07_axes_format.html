@@ -45,9 +45,9 @@
 								 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
 								 .range([h - padding, padding]);
 
-			var rScale = d3.scaleLinear()
+			var rScale = d3.scaleSqrt()
 								 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
-								 .range([2, 5]);
+								 .range([0, 10]);
 
 			var formatAsPercentage = d3.format(".1%");
 
