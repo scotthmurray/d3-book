@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Line chart with axes</title>
+		<title>D3: Line chart indicating missing values</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 
@@ -68,6 +68,7 @@
 
 				//Define line generator
 				var line = d3.line()
+							.defined(function(d) { return d.average >= 0; })
 							.x(function(d) { return xScale(d.date); })
 							.y(function(d) { return yScale(d.average); });
 				
