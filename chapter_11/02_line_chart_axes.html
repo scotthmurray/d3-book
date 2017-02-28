@@ -67,7 +67,7 @@
 						   .ticks(10);
 
 				//Define line generator
-				var line = d3.line()
+				line = d3.line()
 							.x(function(d) { return xScale(d.date); })
 							.y(function(d) { return yScale(d.average); });
 				

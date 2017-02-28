@@ -2,14 +2,34 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Line chart indicating missing values</title>
+		<title>D3: Line chart, labeled</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
+
+			.area {
+				fill: teal;
+				stroke: none;
+			}
 
 			.line {
 				fill: none;
 				stroke: teal;
 				stroke-width: 0.5;
+			}
+
+			.safeLevel {
+				stroke: red;
+				stroke-dasharray: 2, 3;
+			}
+
+			.danger {
+				fill: red;
+			}
+
+			.dangerLabel {
+				font-family: Helvetica, sans-serif;
+				font-size: 12px;
+				fill: red;
 			}
 
 		</style>
@@ -22,7 +42,7 @@
 			var h = 300;
 			var padding = 40;
 			
-			var dataset, xScale, yScale, xAxis, yAxis, line;  //Empty, for now
+			var dataset, xScale, yScale, xAxis, yAxis, area, dangerArea;  //Empty, for now
 
 			//For converting Dates to strings
 			var formatTime = d3.timeFormat("%Y");
@@ -52,7 +72,10 @@
 							   .range([padding, w]);
 
 				yScale = d3.scaleLinear()
-								.domain([0, d3.max(dataset, function(d) { return d.average; })])
+								.domain([
+									d3.min(dataset, function(d) { if (d.average >= 0) return d.average; }) - 10,
+									d3.max(dataset, function(d) { return d.average; })
+								])
 								.range([h - padding, 0]);
 
 				//Define axes
@@ -66,23 +89,35 @@
 						   .scale(yScale)
 						   .ticks(10);
 
-				//Define line generator
-				line = d3.line()
+				//Define area generators
+				area = d3.area()
 							.defined(function(d) { return d.average >= 0; })
 							.x(function(d) { return xScale(d.date); })
-							.y(function(d) { return yScale(d.average); });
-				
+							.y0(function() { return yScale.range()[0]; })
+							.y1(function(d) { return yScale(d.average); });
+
+				dangerArea = d3.area()
+							.defined(function(d) { return d.average >= 350; })
+							.x(function(d) { return xScale(d.date); })
+							.y0(function() { return yScale(350); })
+							.y1(function(d) { return yScale(d.average); });
+
 				//Create SVG element
 				var svg = d3.select("body")
 							.append("svg")
 							.attr("width", w)
 							.attr("height", h);
 
-				//Create line
+				//Create areas
 				svg.append("path")
 					.datum(dataset)
-					.attr("class", "line")
-					.attr("d", line);
+					.attr("class", "area")
+					.attr("d", area);
+
+				svg.append("path")
+					.datum(dataset)
+					.attr("class", "area danger")
+					.attr("d", dangerArea);
 
 				//Create axes
 				svg.append("g")
@@ -94,6 +129,21 @@
 					.attr("class", "axis")
 					.attr("transform", "translate(" + padding + ",0)")
 					.call(yAxis);
+
+				//Draw 350 ppm line
+				svg.append("line")
+					.attr("class", "line safeLevel")
+					.attr("x1", padding)
+					.attr("x2", w)
+					.attr("y1", yScale(350))
+					.attr("y2", yScale(350));
+
+				//Label 350 ppm line
+				svg.append("text")
+					.attr("class", "dangerLabel")
+					.attr("x", padding + 20)
+					.attr("y", yScale(350) - 7)
+					.text("350 ppm “safe” level");
 
 
 			});

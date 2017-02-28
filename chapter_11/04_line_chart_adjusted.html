@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Line chart indicating missing values</title>
+		<title>D3: Line chart, adjusted</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 
@@ -10,6 +10,11 @@
 				fill: none;
 				stroke: teal;
 				stroke-width: 0.5;
+			}
+
+			.safeLevel {
+				stroke: red;
+				stroke-dasharray: 2, 3;
 			}
 
 		</style>
@@ -52,7 +57,10 @@
 							   .range([padding, w]);
 
 				yScale = d3.scaleLinear()
-								.domain([0, d3.max(dataset, function(d) { return d.average; })])
+								.domain([
+									d3.min(dataset, function(d) { if (d.average >= 0) return d.average; }) - 10,
+									d3.max(dataset, function(d) { return d.average; })
+								])
 								.range([h - padding, 0]);
 
 				//Define axes
@@ -77,6 +85,14 @@
 							.append("svg")
 							.attr("width", w)
 							.attr("height", h);
+
+				//Draw 350 ppm line
+				svg.append("line")
+					.attr("class", "line safeLevel")
+					.attr("x1", padding)
+					.attr("x2", w)
+					.attr("y1", yScale(350))
+					.attr("y2", yScale(350));
 
 				//Create line
 				svg.append("path")
