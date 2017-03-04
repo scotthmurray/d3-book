@@ -61,23 +61,23 @@
 						.attr("height", h);
 
 			//
-			//Log selections, so we can inspect them closely
+			// Log selections, so we can inspect them closely
 			//
 			// * Uncomment these one at a time, and explore
 			//   the results in the console! *
 			//
 
-			//console.log('svg.selectAll("rect")');
-			//console.log(svg.selectAll("rect"));
+			// console.log('svg.selectAll("rect")');
+			// console.log(svg.selectAll("rect"));
 
-			//console.log('svg.selectAll("rect").data(dataset, key)');
-			//console.log(svg.selectAll("rect").data(dataset, key));
+			// console.log('svg.selectAll("rect").data(dataset, key)');
+			// console.log(svg.selectAll("rect").data(dataset, key));
 
-			//console.log('svg.selectAll("rect").data(dataset, key).enter()');
-			//console.log(svg.selectAll("rect").data(dataset, key).enter());
+			// console.log('svg.selectAll("rect").data(dataset, key).enter()');
+			// console.log(svg.selectAll("rect").data(dataset, key).enter());
 
-			//console.log('svg.selectAll("rect").data(dataset, key).enter().append("rect")');
-			//console.log(svg.selectAll("rect").data(dataset, key).enter().append("rect"));
+			// console.log('svg.selectAll("rect").data(dataset, key).enter().append("rect")');
+			// console.log(svg.selectAll("rect").data(dataset, key).enter().append("rect"));
 
 			//Create bars
 			svg.selectAll("rect")
@@ -147,10 +147,25 @@
 					xScale.domain(d3.range(dataset.length));
 					yScale.domain([0, d3.max(dataset, function(d) { return d.value; })]);
 
+					// console.log('svg.selectAll("rect")');
+					// console.log(svg.selectAll("rect"));
+
+					// console.log('svg.selectAll("rect").data(dataset, key)');
+					// console.log(svg.selectAll("rect").data(dataset, key));
+
 					//Select…
 					var bars = svg.selectAll("rect")
 						.data(dataset, key);
-					
+
+					// console.log('bars.enter()');
+					// console.log(bars.enter());
+
+					// console.log('bars.enter().append("rect")');
+					// console.log(bars.enter().append("rect"));
+
+					// console.log('bars.enter().append("rect").merge(bars)');
+					// console.log(bars.enter().append("rect").merge(bars));
+
 					//Enter…
 					bars.enter()
 						.append("rect")
@@ -178,6 +193,12 @@
 						.attr("height", function(d) {
 							return yScale(d.value);
 						});
+
+					// console.log('bars.exit()');
+					// console.log(bars.exit());
+
+					// console.log('bars.exit().remove()');
+					// console.log(bars.exit().remove());
 
 					//Exit…
 					bars.exit()
