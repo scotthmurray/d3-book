@@ -2,28 +2,16 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Using radio buttons to trigger different combinations of filters</title>
+		<title>D3: Using each() to run an arbitrary function on each element in a selection</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
-			
-			p {
-				font-family: Helvetica, sans-serif;
-				font-size: 12px;
-			}
-
-			input[type=radio] {
-				margin-left: 40px;
-			}
-
+			/* No style rules here yet */
 		</style>
 	</head>
 	<body>
 
 		<p>
-			<input type="radio" name="filterPreset" value="none" checked="true"> None
-			<input type="radio" name="filterPreset" value="center"> Center
-			<input type="radio" name="filterPreset" value="edges"> Edges
-			<input type="radio" name="filterPreset" value="quadrants"> Quadrants
+			<input type="button" value="Do something for each circle">
 		</p>
 
 		<script type="text/javascript">
@@ -80,7 +68,8 @@
 			   .attr("cy", function(d) {
 			   		return yScale(d[1]);
 			   })
-			   .attr("r", 2.5);
+			   .attr("r", 2.5)
+			   .attr("fill", "black");
 			
 			//Create X axis
 			svg.append("g")
@@ -94,78 +83,32 @@
 				.attr("transform", "translate(" + padding + ",0)")
 				.call(yAxis);
 
-			//On radio button change, update styling
+			//On button click, execute a function for each circle in the allCircles selection
 			d3.selectAll("input")
 				.on("click", function() {
-
-					var view = d3.select(this).node().value;
-
-					//Reset all to black
-					allCircles.attr("fill", "black");
-
-					var midpoint = 500;
-					var colors = d3.schemeCategory10;
-
-					//Filter and highlight based on different conditions
-					switch (view) {
-
-						case "center":
-							
-							var distance = 300;
-
-							allCircles.filter(function(d) {
-									return Math.abs(midpoint - d[0]) < distance && Math.abs(midpoint - d[1]) < distance;
-								})
-								.attr("fill", colors[1]);
-
-							break;
-
-						case "edges":
-							
-							var distance = 300;
-
-							allCircles.filter(function(d) {
-									return Math.abs(midpoint - d[0]) > distance || Math.abs(midpoint - d[1]) > distance;
-								})
-								.attr("fill", colors[3]);
-
-							break;
-
-						case "quadrants":
-							
-							//Top left
-							allCircles.filter(function(d) {
-									return d[0] <= midpoint && d[1] >= midpoint;
-								})
-								.attr("fill", colors[0]);
-							
-							//Top right
-							allCircles.filter(function(d) {
-									return d[0] > midpoint && d[1] >= midpoint;
-								})
-								.attr("fill", colors[1]);
-
-							//Bottom right
-							allCircles.filter(function(d) {
-									return d[0] > midpoint && d[1] < midpoint;
-								})
-								.attr("fill", colors[2]);
-
-							//Bottom left
-							allCircles.filter(function(d) {
-									return d[0] <= midpoint && d[1] < midpoint;
-								})
-								.attr("fill", colors[3]);
-
-							break;
-
-						case "none":
-						default:
-							//Do nothing more
-					}
-
+					allCircles.each(freakOut);  //Hold on to your hats!
 				});
 
+			//Define the freakOut function
+			var freakOut = function(d, i) {
+
+				//Since this function will be called by 'each()',
+				//it will be aware of each element on which it operates.
+				//The 'this' context will be updated, and d and i will
+				//be populated with the associated values.
+
+				var colors = d3.schemeCategory20;
+				var colorIndex = Math.round(Math.random() * 20);
+
+				d3.select(this)
+					.transition()
+					.delay(i * 25)
+					.duration(2000)
+					.ease(d3.easeElasticOut)
+					.attr("fill", colors[colorIndex])
+					.attr("r", 25);
+
+			};
 
 		</script>
 	</body>
