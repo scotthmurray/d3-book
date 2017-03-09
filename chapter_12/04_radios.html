@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Using radio buttons to set filter threshold value</title>
+		<script type="text/javascript" src="../d3.js"></script>
+		<style type="text/css">
+			
+			p {
+				font-family: Helvetica, sans-serif;
+				font-size: 12px;
+			}
+
+			input[type=radio] {
+				margin-left: 40px;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<p>
+			<input type="radio" name="filterPreset" value="0" checked="true"> 0
+			<input type="radio" name="filterPreset" value="200"> 200
+			<input type="radio" name="filterPreset" value="500"> 500
+			<input type="radio" name="filterPreset" value="800"> 800
+		</p>
+
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 600;
+			var h = 300;
+			var padding = 40;
+			
+			//Dynamic, random dataset
+			var dataset = [];					//Initialize empty array
+			var numDataPoints = 200;			//Number of dummy data points to create
+			var xRange = 1000;					//Max range of new x values
+			var yRange = 1000;					//Max range of new y values
+			for (var i = 0; i < numDataPoints; i++) {					//Loop numDataPoints times
+				var newNumber1 = Math.floor(Math.random() * xRange);	//New random integer
+				var newNumber2 = Math.floor(Math.random() * yRange);	//New random integer
+				dataset.push([newNumber1, newNumber2]);					//Add new number to array
+			}
+
+			//Create scale functions
+			var xScale = d3.scaleLinear()
+								 .domain([0, 1000])
+								 .range([padding, w - padding / 2]);
+
+			var yScale = d3.scaleLinear()
+								 .domain([0, 1000])
+								 .range([h - padding, padding / 2]);
+
+			//Define X axis
+			var xAxis = d3.axisBottom()
+							  .scale(xScale)
+							  .ticks(5);
+
+			//Define Y axis
+			var yAxis = d3.axisLeft()
+							  .scale(yScale)
+							  .ticks(5);
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Create circles
+			var allCircles = svg.selectAll("circle")
+			   .data(dataset)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(d) {
+			   		return xScale(d[0]);
+			   })
+			   .attr("cy", function(d) {
+			   		return yScale(d[1]);
+			   })
+			   .attr("r", 2.5);
+			
+			//Create X axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + (h - padding) + ")")
+				.call(xAxis);
+			
+			//Create Y axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(" + padding + ",0)")
+				.call(yAxis);
+
+			//On radio button change, update styling
+			d3.selectAll("input")
+				.on("click", function() {
+
+					var threshold = +d3.select(this).node().value;
+					
+					allCircles.attr("fill", "black")
+						.filter(function(d) {
+							return d[0] <= threshold;
+						})
+						.attr("fill", "red");
+
+				});
+
+
+		</script>
+	</body>
+</html>
