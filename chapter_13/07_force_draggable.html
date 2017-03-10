@@ -78,9 +78,9 @@
 					return colors(i);
 				})
 				.call(d3.drag()  //Define what to do on drag events
-					.on("start", dragstarted)
-					.on("drag", dragged)
-					.on("end", dragended));
+					.on("start", dragStarted)
+					.on("drag", dragging)
+					.on("end", dragEnded));
 
 			//Add a simple tooltip
 			nodes.append("title")
@@ -102,18 +102,18 @@
 			});
 
 			//Define drag event functions
-			function dragstarted(d) {
+			function dragStarted(d) {
 				if (!d3.event.active) force.alphaTarget(0.3).restart();
 				d.fx = d.x;
 				d.fy = d.y;
 			}
 
-			function dragged(d) {
+			function dragging(d) {
 				d.fx = d3.event.x;
 				d.fy = d3.event.y;
 			}
 
-			function dragended(d) {
+			function dragEnded(d) {
 				if (!d3.event.active) force.alphaTarget(0);
 				d.fx = null;
 				d.fy = null;
