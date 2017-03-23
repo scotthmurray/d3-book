@@ -2,23 +2,32 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Zooming the map</title>
+		<title>D3: Zooming the map with buttons!</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 			
-			.pan rect {
+			.pan rect,
+			.zoom rect {
 				fill: black;
 				opacity: 0.2;
 			}
+			
+			.zoom rect {
+				rx: 5;  /* Rounded corners */
+				ry: 5;
+			}
 
-			.pan text {
+			.pan text,
+			.zoom text {
 				fill: black;
 				font-size: 18px;
 				text-anchor: middle;
 			}
 
 			.pan:hover rect,
- 			.pan:hover text {
+ 			.pan:hover text,
+			.zoom:hover rect,
+ 			.zoom:hover text {
 				fill: blue;
 			}
 
@@ -191,6 +200,7 @@
 						   });
 						
 						createPanButtons();
+						createZoomButtons();
 
 					});
 
@@ -272,9 +282,13 @@
 
 				d3.selectAll(".pan")
 					.on("click", function() {
-						
+
 						//Get current translation offset
-						var offset = projection.translate();
+						var transform = d3.zoomTransform(map.node());
+	
+						var x = transform.x;
+						var y = transform.y;
+						var k = transform.k;
 
 						//Set how much to move on each click
 						var moveAmount = 50;
@@ -285,37 +299,115 @@
 						//Modify the offset, depending on the direction
 						switch (direction) {
 							case "north":
-								offset[1] += moveAmount;  //Increase y offset
+								y += moveAmount;  //Increase y offset
 								break;
 							case "south":
-								offset[1] -= moveAmount;  //Decrease y offset
+								y -= moveAmount;  //Decrease y offset
 								break;
 							case "west":
-								offset[0] += moveAmount;  //Increase x offset
+								x += moveAmount;  //Increase x offset
 								break;
 							case "east":
-								offset[0] -= moveAmount;  //Decrease x offset
+								x -= moveAmount;  //Decrease x offset
 								break;
 							default:
 								break;
 						}
 
-						//Update projection with new offset
-						projection.translate(offset);
+						//Transition to new zoom transform values
+						//
+						//This triggers a zoom event, specifying a new 'zoomIdentity'
+						//with our new x and y values (and unchanged k value).
+						//
+						map.transition()
+							.call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(k));
 
-						//Update all paths and circles
-						svg.selectAll("path")
-							.transition()
-							.attr("d", path);
+					});
 
-						svg.selectAll("circle")
-							.transition()
-							.attr("cx", function(d) {
-								return projection([d.lon, d.lat])[0];
-							})
-							.attr("cy", function(d) {
-								return projection([d.lon, d.lat])[1];
-							});
+			};
+			
+			//Create zoom buttons
+			var createZoomButtons = function() {
+
+				//Create the clickable groups
+
+				//Zoom in button
+				var zoomIn = svg.append("g")
+					.attr("class", "zoom")	//All share the 'zoom' class
+					.attr("id", "in")		//The ID will tell us which direction to head
+					.attr("transform", "translate(" + (w - 110) + "," + (h - 70) + ")");
+
+				zoomIn.append("rect")
+					.attr("x", 0)
+					.attr("y", 0)
+					.attr("width", 30)
+					.attr("height", 30);
+
+				zoomIn.append("text")
+					.attr("x", 15)
+					.attr("y", 20)
+					.text("+");
+				
+				//Zoom out button
+				var zoomOut = svg.append("g")
+					.attr("class", "zoom")
+					.attr("id", "out")
+					.attr("transform", "translate(" + (w - 70) + "," + (h - 70) + ")");
+
+				zoomOut.append("rect")
+					.attr("x", 0)
+					.attr("y", 0)
+					.attr("width", 30)
+					.attr("height", 30);
+
+				zoomOut.append("text")
+					.attr("x", 15)
+					.attr("y", 20)
+					.html("&ndash;");
+
+				//Zooming interaction
+
+				d3.selectAll(".zoom")
+					.on("click", function() {
+
+						//Get current translation offset
+						var transform = d3.zoomTransform(map.node());
+	console.log(transform);
+						var x = transform.x;
+						var y = transform.y;
+						var k = transform.k;
+						
+						//Set how much to scale on each click
+						var scaleFactor = 1.5;
+						
+						//Which way are we headed?
+						var direction = d3.select(this).attr("id");
+
+						//Modify the k scale value, depending on the direction
+						switch (direction) {
+							case "in":
+								k *= scaleFactor;  //Increase k value
+								break;
+							case "out":
+								k /= scaleFactor;  //Decrease k value
+								break;
+							default:
+								break;
+						}
+
+						//Transition to new zoom transform values
+						//
+						//This triggers a zoom event, specifying a new 'zoomIdentity'
+						//with our new k value (and unchanged x and y values).
+						//
+						map.transition()
+							.call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(k)
+						
+						// .translate(w/2, h/2)
+						// .scale(0.25)
+						// .translate(-center[0], -center[1]));
+						
+						);
 
 					});
 

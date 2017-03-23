@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Panning the map, with transitions</title>
+		<title>D3: Zooming the map, with pan buttons fixed</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 			
@@ -33,50 +33,11 @@
 
 			//Define map projection
 			var projection = d3.geoAlbersUsa()
-								   .translate([w/2, h/2])
-								   .scale([2000]);
+								   .translate([0, 0]);
 
 			//Define path generator
 			var path = d3.geoPath()
 							 .projection(projection);
-			
-			//Define zoom behavior
-			var zoom = d3.zoom()
-				//.scaleExtent([1, Infinity])
-				//.translateExtent([[0, 0], [w, h]])
-				//.extent([[0, 0], [w, h]])
-				.on("zoom", zoomed);
-
-			//Define what to do when zooming
-			function zoomed() {         
-				
-				//console.log(d3.event.transform);
-
-				//New empty array
-				var offset = [];
-
-				//Calculate new offset, relative to starting (center) point
-				offset[0] = w/2 + d3.event.transform.x;
-				offset[1] = h/2 + d3.event.transform.y;
-
-				//Update projection with new offset
-				projection.translate(offset);
-
-				//Update all paths and circles
-				svg.selectAll("path")
-					//.transition()
-					.attr("d", path);
-
-				svg.selectAll("circle")
-					//.transition()
-					.attr("cx", function(d) {
-						return projection([d.lon, d.lat])[0];
-					})
-					.attr("cy", function(d) {
-						return projection([d.lon, d.lat])[1];
-					});
-
-			}
 				 
 			//Define quantize scale to sort data values into buckets of color
 			var color = d3.scaleQuantize()
@@ -92,10 +53,62 @@
 						.attr("width", w)
 						.attr("height", h);
 
-			//Create a container in which all pan & zoom-able elements will live
+			//Define what to do when panning or zooming
+			var zooming = function(d) {
+
+				//Log out d3.event.transform, so you can see all the goodies inside
+				//console.log(d3.event.transform);
+
+				//Log out what the transform saved to the map is at this moment
+				//console.log(d3.zoomTransform(map.node()));
+
+				//New offset array
+				var offset = [d3.event.transform.x, d3.event.transform.y];
+
+				//Calculate new scale
+				var newScale = d3.event.transform.k * 2000;
+
+				//Update projection with new offset and scale
+				projection.translate(offset)
+						  .scale(newScale);
+
+				//Update all paths and circles
+				svg.selectAll("path")
+					.attr("d", path);
+
+				svg.selectAll("circle")
+					.attr("cx", function(d) {
+						return projection([d.lon, d.lat])[0];
+					})
+					.attr("cy", function(d) {
+						return projection([d.lon, d.lat])[1];
+					});
+
+			}
+
+			//Then define the zoom behavior
+			var zoom = d3.zoom()
+						 .on("zoom", zooming);
+
+			//The center of the country, roughly
+			var center = projection([-97.0, 39.0]);
+
+			//Create a container in which all zoom-able elements will live
 			var map = svg.append("g")
 						.attr("id", "map")
-						.call(zoom);
+						.call(zoom)  //Bind the zoom behavior
+  						.call(zoom.transform, d3.zoomIdentity  //Then apply the initial transform
+							.translate(w/2, h/2)
+							.scale(0.25)
+							.translate(-center[0], -center[1]));
+
+			//Create a new, invisible background rect to catch zoom events
+			map.append("rect")
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("width", w)
+				.attr("height", h)
+				.attr("opacity", 0);
 
 			//Load in agriculture data
 			d3.csv("us-ag-productivity.csv", function(data) {
@@ -186,6 +199,7 @@
 			
 			});
 			
+			//Create panning buttons
 			var createPanButtons = function() {
 
 				//Create the clickable groups
@@ -204,7 +218,7 @@
 				north.append("text")
 					.attr("x", w/2)
 					.attr("y", 20)
-					.html("&uarr;")
+					.html("&uarr;");
 				
 				//South
 				var south = svg.append("g")
@@ -220,7 +234,7 @@
 				south.append("text")
 					.attr("x", w/2)
 					.attr("y", h - 10)
-					.html("&darr;")
+					.html("&darr;");
 
 				//West
 				var west = svg.append("g")
@@ -236,7 +250,7 @@
 				west.append("text")
 					.attr("x", 15)
 					.attr("y", h/2)
-					.html("&larr;")
+					.html("&larr;");
 
 				//East
 				var east = svg.append("g")
@@ -252,15 +266,19 @@
 				east.append("text")
 					.attr("x", w - 15)
 					.attr("y", h/2)
-					.html("&rarr;")
+					.html("&rarr;");
 
 				//Panning interaction
 
 				d3.selectAll(".pan")
 					.on("click", function() {
-						
+
 						//Get current translation offset
-						var offset = projection.translate();
+						var transform = d3.zoomTransform(map.node());
+	
+						var x = transform.x;
+						var y = transform.y;
+						var k = transform.k;
 
 						//Set how much to move on each click
 						var moveAmount = 50;
@@ -271,37 +289,28 @@
 						//Modify the offset, depending on the direction
 						switch (direction) {
 							case "north":
-								offset[1] += moveAmount;  //Increase y offset
+								y += moveAmount;  //Increase y offset
 								break;
 							case "south":
-								offset[1] -= moveAmount;  //Decrease y offset
+								y -= moveAmount;  //Decrease y offset
 								break;
 							case "west":
-								offset[0] += moveAmount;  //Increase x offset
+								x += moveAmount;  //Increase x offset
 								break;
 							case "east":
-								offset[0] -= moveAmount;  //Decrease x offset
+								x -= moveAmount;  //Decrease x offset
 								break;
 							default:
 								break;
 						}
 
-						//Update projection with new offset
-						projection.translate(offset);
-
-						//Update all paths and circles
-						svg.selectAll("path")
-							.transition()
-							.attr("d", path);
-
-						svg.selectAll("circle")
-							.transition()
-							.attr("cx", function(d) {
-								return projection([d.lon, d.lat])[0];
-							})
-							.attr("cy", function(d) {
-								return projection([d.lon, d.lat])[1];
-							});
+						//Transition to new zoom transform values
+						//
+						//This triggers a zoom event, specifying a new 'zoomIdentity'
+						//with our new x and y values (and unchanged k value).
+						//
+						map.transition()
+							.call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(k));
 
 					});
 
