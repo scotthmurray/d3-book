@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Dragging the map</title>
+		<title>D3: Dragging the map, with background rect</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 			
@@ -92,6 +92,14 @@
 			var map = svg.append("g")
 						.attr("id", "map")
 						.call(drag);  //Bind the dragging behavior
+
+			//Create a new, invisible background rect to catch drag events
+			map.append("rect")
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("width", w)
+				.attr("height", h)
+				.attr("opacity", 0);
 
 			//Load in agriculture data
 			d3.csv("us-ag-productivity.csv", function(data) {

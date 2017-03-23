@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Dragging the map</title>
+		<title>D3: Panning the map, with transitions</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 			
@@ -39,6 +39,44 @@
 			//Define path generator
 			var path = d3.geoPath()
 							 .projection(projection);
+			
+			//Define zoom behavior
+			var zoom = d3.zoom()
+				//.scaleExtent([1, Infinity])
+				//.translateExtent([[0, 0], [w, h]])
+				//.extent([[0, 0], [w, h]])
+				.on("zoom", zoomed);
+
+			//Define what to do when zooming
+			function zoomed() {         
+				
+				//console.log(d3.event.transform);
+
+				//New empty array
+				var offset = [];
+
+				//Calculate new offset, relative to starting (center) point
+				offset[0] = w/2 + d3.event.transform.x;
+				offset[1] = h/2 + d3.event.transform.y;
+
+				//Update projection with new offset
+				projection.translate(offset);
+
+				//Update all paths and circles
+				svg.selectAll("path")
+					//.transition()
+					.attr("d", path);
+
+				svg.selectAll("circle")
+					//.transition()
+					.attr("cx", function(d) {
+						return projection([d.lon, d.lat])[0];
+					})
+					.attr("cy", function(d) {
+						return projection([d.lon, d.lat])[1];
+					});
+
+			}
 				 
 			//Define quantize scale to sort data values into buckets of color
 			var color = d3.scaleQuantize()
@@ -54,44 +92,10 @@
 						.attr("width", w)
 						.attr("height", h);
 
-			//Define what to do when dragging
-			var dragging = function(d) {
-
-				//Log out d3.event, so you can see all the goodies inside
-				//console.log(d3.event);
-
-				//Get the current (pre-dragging) translation offset
-				var offset = projection.translate();
-
-				//Augment the offset, following the mouse movement
-				offset[0] += d3.event.dx;
-				offset[1] += d3.event.dy;
-
-				//Update projection with new offset
-				projection.translate(offset);
-
-				//Update all paths and circles
-				svg.selectAll("path")
-					.attr("d", path);
-
-				svg.selectAll("circle")
-					.attr("cx", function(d) {
-						return projection([d.lon, d.lat])[0];
-					})
-					.attr("cy", function(d) {
-						return projection([d.lon, d.lat])[1];
-					});
-
-			}
-
-			//Then define the drag behavior
-			var drag = d3.drag()
-						 .on("drag", dragging);
-
-			//Create a container in which all pan-able elements will live
+			//Create a container in which all pan & zoom-able elements will live
 			var map = svg.append("g")
 						.attr("id", "map")
-						.call(drag);  //Bind the dragging behavior
+						.call(zoom);
 
 			//Load in agriculture data
 			d3.csv("us-ag-productivity.csv", function(data) {
@@ -182,7 +186,6 @@
 			
 			});
 			
-			//Create panning buttons
 			var createPanButtons = function() {
 
 				//Create the clickable groups
