@@ -370,15 +370,8 @@
 				d3.selectAll(".zoom")
 					.on("click", function() {
 
-						//Get current translation offset
-						var transform = d3.zoomTransform(map.node());
-	console.log(transform);
-						var x = transform.x;
-						var y = transform.y;
-						var k = transform.k;
-						
 						//Set how much to scale on each click
-						var scaleFactor = 1.5;
+						var scaleFactor;
 						
 						//Which way are we headed?
 						var direction = d3.select(this).attr("id");
@@ -386,10 +379,10 @@
 						//Modify the k scale value, depending on the direction
 						switch (direction) {
 							case "in":
-								k *= scaleFactor;  //Increase k value
+								scaleFactor = 1.5;
 								break;
 							case "out":
-								k /= scaleFactor;  //Decrease k value
+								scaleFactor = 0.5;
 								break;
 							default:
 								break;
@@ -399,15 +392,24 @@
 						//
 						//This triggers a zoom event, specifying a new 'zoomIdentity'
 						//with our new k value (and unchanged x and y values).
+						//xxxx
 						//
 						map.transition()
-							.call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(k)
+							.call(zoom.scaleBy, scaleFactor);
+						
+						
+						
+						
+						//xxxxx
+						//FIX CENTERING
+						
+						// .call(zoom.transform, d3.zoomIdentity.translate(-w/2, -h/2).scale(k).translate(w/2 + x, h/2 + y));
+						
 						
 						// .translate(w/2, h/2)
 						// .scale(0.25)
 						// .translate(-center[0], -center[1]));
 						
-						);
 
 					});
 
