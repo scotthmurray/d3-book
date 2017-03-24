@@ -382,7 +382,7 @@
 								scaleFactor = 1.5;
 								break;
 							case "out":
-								scaleFactor = 0.5;
+								scaleFactor = 0.75;
 								break;
 							default:
 								break;
@@ -390,26 +390,10 @@
 
 						//Transition to new zoom transform values
 						//
-						//This triggers a zoom event, specifying a new 'zoomIdentity'
-						//with our new k value (and unchanged x and y values).
-						//xxxx
+						//This triggers a zoom event, scaling by 'scaleFactor'
 						//
 						map.transition()
 							.call(zoom.scaleBy, scaleFactor);
-						
-						
-						
-						
-						//xxxxx
-						//FIX CENTERING
-						
-						// .call(zoom.transform, d3.zoomIdentity.translate(-w/2, -h/2).scale(k).translate(w/2 + x, h/2 + y));
-						
-						
-						// .translate(w/2, h/2)
-						// .scale(0.25)
-						// .translate(-center[0], -center[1]));
-						
 
 					});
 
