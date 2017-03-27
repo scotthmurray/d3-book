@@ -59,9 +59,6 @@
 				//Log out d3.event.transform, so you can see all the goodies inside
 				//console.log(d3.event.transform);
 
-				//Log out what the transform saved to the map is at this moment
-				//console.log(d3.zoomTransform(map.node()));
-
 				//New offset array
 				var offset = [d3.event.transform.x, d3.event.transform.y];
 
@@ -273,15 +270,12 @@
 				d3.selectAll(".pan")
 					.on("click", function() {
 
-						//Get current translation offset
-						var transform = d3.zoomTransform(map.node());
-	
-						var x = transform.x;
-						var y = transform.y;
-						var k = transform.k;
-
 						//Set how much to move on each click
 						var moveAmount = 50;
+						
+						//Set x/y to zero for now
+						var x = 0;
+						var y = 0;
 						
 						//Which way are we headed?
 						var direction = d3.select(this).attr("id");
@@ -304,13 +298,9 @@
 								break;
 						}
 
-						//Transition to new zoom transform values
-						//
-						//This triggers a zoom event, specifying a new 'zoomIdentity'
-						//with our new x and y values (and unchanged k value).
-						//
+						//This triggers a zoom event, translating by x, y
 						map.transition()
-							.call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(k));
+							.call(zoom.translateBy, x, y);
 
 					});
 
