@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>D3: Placing charts in a larger page layout</title>
+	<script type="text/javascript" src="d3.js"></script>
+	<style type="text/css">
+
+
+
+		/* Lots of new CSS rules! */
+
+		/* HTML page styles */
+
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			font-family: Helvetica, Arial, sans-serif;
+			background-color: #eee;
+		}
+
+		#container {
+			width: 800px;
+			margin: 25px auto 25px auto;
+			padding: 50px 50px 50px 50px;
+			background-color: white;
+			box-shadow: 0 0 20px #ccc;
+		}
+
+		h1 {
+			margin-bottom: 25px;
+			font-size: 24px;
+		}
+
+		h2 {
+			margin-top: 30px;
+			font-size: 14px;
+		}
+
+		p {
+			margin-bottom: 25px;
+			font-size: 14px;
+			line-height: 18px;
+		}
+
+		.chartContainer {
+			/* Nothing here yet… */
+		}
+
+		#buttonContainer {
+			margin-bottom: 10px;
+		}
+
+		button {
+			padding: 15px;
+		}
+
+		#footer p {
+			margin-top: 50px;
+			margin-bottom: 0;
+			text-align: right;
+			font-size: 10px;
+			color: gray;
+		}
+
+		/* Chart styles */
+
+		svg {
+			display: block;
+			margin-bottom: 10px;
+			background-color: white;
+		}
+
+		g.bar {
+			cursor: pointer;
+		}
+
+		g.bar text {
+			font-family: sans-serif;
+			font-size: 11px;
+			fill: white;
+			font-style: bold;
+			text-anchor: middle;
+			opacity: 0;
+		}
+
+		g.bar.highlight text {
+			opacity: 1;
+		}
+
+		g.bar.highlight rect {
+			fill: Maroon;
+		}
+
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: black;
+			shape-rendering: crispEdges;
+		}
+		
+		.axis text {
+			font-family: sans-serif;
+			font-size: 11px;
+		}
+
+
+
+	</style>
+</head>
+<body>
+
+
+
+	<!-- New HTML structure and content! -->
+	<div id="container">
+
+		<h1>Five New Data Insights You Have to See to Believe</h1>
+		
+		<p>You won&rsquo;t believe your eyes when you realize what these charts are telling you. The numbers don&rsquo;t lie, and sometimes facing the facts can cause a shock. No one could have predicted this, and no one knew it was true until we published these innovative visualizations, thereby proving definitively that a picture is worth a thousand words.  (Edit the source to add more cliches here.)</p>
+
+		<div class="chartContainer" id="salesChartContainer">
+			<h2>Total sales by employee in July 2015</h2>
+		</div>
+
+		<div class="chartContainer" id="bonusChartContainer">
+			<h2>Total bonuses by employee in July 2015</h2>
+		</div>
+
+		<div id="buttonContainer">
+			<button id="sort">Sort by Value</button>
+		</div>
+		
+		<div id="footer">
+			<p><strong>Note:</strong> The contents of these charts should not be taken seriously, although the technical principles behind them should.</p>
+		</div>
+
+	</div>
+	
+
+
+	<script type="text/javascript">
+
+
+
+		//Sort button state
+		//Default action for button will be to sort by *value*
+		var sortByNameOrValue = false;
+
+		//New, dynamic width value pulled from .chartContainer
+		var w = d3.select(".chartContainer").node().clientWidth;
+
+		//Height, padding
+		var h = 250;
+		var padding = 25;
+		
+		//Sample data
+		var dataset = [
+						{
+							name:	"Alice",
+							sales:	50,
+							bonus:	5
+						},
+						{
+							name:	"Bob",
+							sales:	40,
+							bonus:	10
+						},
+						{
+							name:	"Carmen",
+							sales:	65,
+							bonus:	15
+						},
+						{
+							name:	"Dan",
+							sales:	55,
+							bonus:	30
+						},
+						{
+							name:	"Esmerelda",
+							sales:	45,
+							bonus:	20
+						},
+						{
+							name:	"Frank",
+							sales:	30,
+							bonus:	5
+						}
+					];
+
+		//Configure x and y scale functions
+		var xScale = d3.scale.ordinal()
+						.domain(d3.range(dataset.length))
+						.rangeRoundBands([ padding, w - padding ], 0.05);
+
+		//Now using two different y scales for two different charts
+		var salesScale = d3.scale.linear()
+						.domain([ 0, d3.max(dataset, function(d) {
+							return d.sales;
+						}) ])
+						.rangeRound([ h - padding, padding ]);
+
+		var bonusScale = d3.scale.linear()
+						.domain([ 0, d3.max(dataset, function(d) {
+							return d.bonus;
+						}) ])
+						.rangeRound([ h - padding, padding ]);
+
+		//Now using two different y axes
+		var salesAxis = d3.svg.axis()
+						.scale(salesScale)
+						.orient("left")
+						.ticks(5);
+	
+		var bonusAxis = d3.svg.axis()
+						.scale(bonusScale)
+						.orient("left")
+						.ticks(5);
+
+
+
+		//
+		// Make the first chart (sales data)
+		//
+
+		//Create SVG element
+		var svg = d3.select("#salesChartContainer")  //New target location!
+					.append("svg")
+					.attr("id", "salesChart")
+					.attr("width", w)
+					.attr("height", h);
+
+		//Create groups
+		var groups = svg.selectAll("g")
+						.data(dataset)
+						.enter()
+						.append("g")
+						.attr("class", "bar")
+						.attr("transform", function(d, i) {
+					  		return "translate(" + xScale(i) + ",0)";
+						});
+
+		//Add bar to each group
+		var rects = groups.append("rect")
+						  .attr("x", 0)
+						  .attr("y", function(d) {
+						  		return h - padding;
+						  })
+						  .attr("width", xScale.rangeBand())
+						  .attr("height", 0)
+						  .attr("fill", "SteelBlue");
+
+		//Add label to each group
+		groups.append("text")
+			.attr("x", xScale.rangeBand() / 2)
+			.attr("y", function(d) {
+				return salesScale(d.sales) + 14;
+			})
+			.text(function(d) {
+				return d.name + ": " + d.sales;
+			})
+
+		//Transition rects into place
+		rects.transition()
+			.delay(function(d, i) {
+				return i * 100;
+			})
+			.duration(1500)
+			.attr("y", function(d) {
+				return salesScale(d.sales);
+			})
+			.attr("height", function(d) {
+				return h - padding - salesScale(d.sales);
+			});
+
+		//Create y axis
+		svg.append("g")
+			.attr("class", "axis")
+			.attr("transform", "translate(" + padding + ",0)")
+			.attr("opacity", 0)
+			.call(salesAxis)
+			.transition()
+			.delay(2000)
+			.duration(1500)
+			.attr("opacity", 1.0);
+
+
+
+		//
+		// Make the second chart (bonus data)
+		//
+
+		//Create SVG element
+		svg = d3.select("#bonusChartContainer")  //New target location!
+					.append("svg")
+					.attr("id", "bonusChart")
+					.attr("width", w)
+					.attr("height", h);
+
+		//Create groups
+		groups = svg.selectAll("g")
+						.data(dataset)
+						.enter()
+						.append("g")
+						.attr("class", "bar")
+						.attr("transform", function(d, i) {
+					  		return "translate(" + xScale(i) + ",0)";
+						});
+
+		//Add bar to each group
+		rects = groups.append("rect")
+						  .attr("x", 0)
+						  .attr("y", function(d) {
+						  		return h - padding;
+						  })
+						  .attr("width", xScale.rangeBand())
+						  .attr("height", 0)
+						  .attr("fill", "SteelBlue");
+
+		//Add label to each group
+		groups.append("text")
+			.attr("x", xScale.rangeBand() / 2)
+			.attr("y", function(d) {
+				return bonusScale(d.bonus) + 14;
+			})
+			.text(function(d) {
+				return d.name + ": " + d.bonus;
+			})
+
+		//Transition rects into place
+		rects.transition()
+			.delay(function(d, i) {
+				return i * 100;
+			})
+			.duration(1500)
+			.attr("y", function(d) {
+				return bonusScale(d.bonus);
+			})
+			.attr("height", function(d) {
+				return h - padding - bonusScale(d.bonus);
+			});
+
+		//Create y axis
+		svg.append("g")
+			.attr("class", "axis")
+			.attr("transform", "translate(" + padding + ",0)")
+			.attr("opacity", 0)
+			.call(bonusAxis)
+			.transition()
+			.delay(2000)
+			.duration(1500)
+			.attr("opacity", 1.0);
+
+
+
+		//New functionality for interaction for ALL groups
+		//in BOTH charts
+		d3.selectAll("g.bar")
+			.on("mouseover", function(d) {
+
+				var thisName = d.name;
+
+				d3.selectAll("g.bar")
+					.filter(function(d) {
+						if (thisName == d.name) {
+							return true;  //…then it's a match
+						}
+					})
+					.classed("highlight", true);
+
+			})
+			.on("mouseout", function() {
+
+				d3.selectAll("g.bar")
+					.classed("highlight", false);
+
+			})
+
+
+
+		//Sorting logic
+		d3.select("#sort")
+			.on("click", function() {
+
+				//Need to reselect all groups in each chart
+				d3.selectAll("#salesChart g.bar").sort(function(a, b) {
+						if (sortByNameOrValue) {
+	  						return d3.ascending(a.name, b.name);
+	  					} else {
+	  						return d3.ascending(a.sales, b.sales);
+	  					}
+					})
+					.transition()
+					.delay(function(d, i) {
+						return i * 50;
+					})
+					.duration(1000)
+					.attr("transform", function(d, i) {
+				  		return "translate(" + xScale(i) + ",0)";
+					});
+
+				d3.selectAll("#bonusChart g.bar").sort(function(a, b) {
+						if (sortByNameOrValue) {
+	  						return d3.ascending(a.name, b.name);
+	  					} else {
+	  						return d3.ascending(a.bonus, b.bonus);
+	  					}
+					})
+					.transition()
+					.delay(function(d, i) {
+						return i * 50;
+					})
+					.duration(1000)
+					.attr("transform", function(d, i) {
+				  		return "translate(" + xScale(i) + ",0)";
+					});
+
+				//Update text in button
+				d3.select(this)
+					.text(function() {
+						if (sortByNameOrValue) {
+							return "Sort by Value";
+						} else {
+							return "Sort by Name";
+						}
+					})
+
+				//Flip value of boolean
+				sortByNameOrValue = !sortByNameOrValue;
+
+			});
+
+
+
+	</script>
+</body>
+</html>
