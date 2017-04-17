@@ -39,9 +39,9 @@
 			//For converting Dates to strings
 			var formatTime = d3.timeFormat("%b %Y");
 
-			//Set up stack method
-			var stack = d3.stack();
-						  //.order(d3.stackOrderDescending);  // <-- Flipped stacking order
+			//Set up stack methods
+			var vehicleStack = d3.stack();
+			var typeStack = d3.stack();
 
 			//Load in data
 			d3.request("vehicle_sales_data.csv")
@@ -67,7 +67,7 @@
 						
 						//Create a new object
 						dataset[i - 3] = {
-							date: parseTime(rows[i][0]),  //Make a new Date object for each year + month
+							date: parseTime(rows[i][0])  //Make a new Date object for each year + month
 						};
 						
 						//Loop once for each vehicle in this row (i.e., for this date)
@@ -113,17 +113,78 @@
 					// console.log(keys);
 					
 					//Tell stack function where to find the keys
-					stack.keys(keys)
+					vehicleStack.keys(keys)
 						.value(function value(d, key) {
 							return d[key].sales;
 						});
 
 					//Stack the data and log it out
-					var series = stack(dataset);
-					// console.log(series);
+					var vehicleSeries = vehicleStack(dataset);
+					// console.log(vehicleSeries);
 					
 					
 					
+					//
+					//	TYPE DATA SERIES
+					//
+					
+					//The goal here is to make a totally separate data set that
+					//includes just monthly totals for each `type` (HEV, PHEV, BEV, FCEV).
+					
+					//Make typeDataset an empty array, so we can start adding values
+					typeDataset = [];
+					
+					//Loop once for each row of the CSV, starting at row 3,
+					//since rows 0-2 contain only vehicle info, not sales values.
+					for (var i = 3; i < rows.length; i++) {
+						
+						//Create a new object
+						typeDataset[i - 3] = {
+							date: parseTime(rows[i][0]),  //Make a new Date object for each year + month
+							"HEV": 0,
+							"PHEV": 0,
+							"BEV": 0,
+							"FCEV": 0
+						};
+						
+						//Loop once for each vehicle in this row (i.e., for this date)
+						for (var j = 1; j < rows[i].length; j++) {
+						
+							var type 		= rows[2][j];  //'Type' from 3rd row in CSV
+							var sales		= rows[i][j];  //Sales value for this vehicle and month
+							
+							//If sales value exists…
+							if (sales) {
+								sales = parseInt(sales);  //Convert from string to int
+							} else {  //Otherwise…
+								sales = 0;  //Set to zero
+							}
+
+							//Add sales value to existing sum
+							typeDataset[i - 3][type] += sales;
+							
+						}
+
+					}
+
+					//Log out the final state of dataset
+					// console.log(typeDataset);
+
+
+
+					//
+					// STACKING
+					//
+
+					//Tell stack function where to find the keys
+					typeStack.keys([ "HEV", "PHEV", "BEV", "FCEV" ]);
+
+					//Stack the data and log it out
+					var typeSeries = typeStack(typeDataset);
+					// console.log(typeSeries);
+
+
+
 					//
 					// MAKE THE CHART
 					//
@@ -177,9 +238,11 @@
 								.attr("width", w)
 								.attr("height", h);
 				
-					//Create areas
-					svg.selectAll("path")
-						.data(series)
+					//Create areas for individual VEHICLES
+					svg.append("g")
+						.attr("id", "vehicles")
+						.selectAll("path")
+						.data(vehicleSeries)
 						.enter()
 						.append("path")
 						.attr("class", "area")
@@ -217,6 +280,56 @@
 						.text(function(d) {
 							return d.key;
 						});
+						
+						//Create areas for TYPES
+						svg.append("g")
+							.attr("id", "types")
+							.selectAll("path")
+							.data(typeSeries)
+							.enter()
+							.append("path")
+							.attr("class", "area")
+							.attr("d", area)
+							.attr("fill", function(d) {
+
+								//Which type is this?
+								var thisType = d.key;
+								
+								//New color var
+								var color;
+								
+								switch (thisType) {
+									case "HEV":
+										color = d3.schemeCategory20[0];
+										break;
+									case "PHEV":
+										color = d3.schemeCategory20[1];
+										break;
+									case "BEV":
+										color = d3.schemeCategory20[2];
+										break;
+									case "FCEV":
+										color = d3.schemeCategory20[3];
+										break;
+								}
+								
+								return color;
+							})
+							.append("title")  //Make tooltip
+							.text(function(d) {
+								return d.key;
+							});
+
+					//Click to fade out types
+					d3.select("g#types")
+						.on("click", function() {
+							d3.select(this)
+								.attr("opacity", 1)
+								.transition()
+								.duration(2000)
+								.attr("opacity", 0);
+						});
+
 				
 					//Create axes
 					svg.append("g")
