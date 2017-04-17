@@ -130,29 +130,29 @@
 				
 					//Create scale functions
 					xScale = d3.scaleTime()
-								   .domain([
-										d3.min(dataset, function(d) { return d.date; }),
-										d3.max(dataset, function(d) { return d.date; })
-									])
-								   .range([padding, w - padding * 2]);
+							   .domain([
+									d3.min(dataset, function(d) { return d.date; }),
+									d3.max(dataset, function(d) { return d.date; })
+								])
+							   .range([padding, w - padding * 2]);
 				
 					yScale = d3.scaleLinear()
-									.domain([
-										0,
-										d3.max(dataset, function(d) {
-											var sum = 0;
-				
-											//Loops once for each row, to calculate
-											//the total (sum) of sales of all vehicles
-											for (var i = 0; i < keys.length; i++) {
-												sum += d[keys[i]].sales;
-											};
-				
-											return sum;
-										})
-									])
-									.range([h - padding, padding / 2])
-									.nice();
+								.domain([
+									0,
+									d3.max(dataset, function(d) {
+										var sum = 0;
+			
+										//Loops once for each row, to calculate
+										//the total (sum) of sales of all vehicles
+										for (var i = 0; i < keys.length; i++) {
+											sum += d[keys[i]].sales;
+										};
+			
+										return sum;
+									})
+								])
+								.range([h - padding, padding / 2])
+								.nice();
 				
 					//Define axes
 					xAxis = d3.axisBottom()
