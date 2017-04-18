@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Types only</title>
+		<title>D3: Click to transition</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 
@@ -315,21 +315,23 @@
 								
 								return color;
 							})
+							.on("click", function() {
+								
+								// d3.select("#types")
+								// 	.selectAll("path")
+								// 	.attr("opacity", 1)
+								// 	.transition()
+								// 	.duration(500)
+								// 	.attr("opacity", 0);
+								
+								d3.select(this)
+									.attr("opacity", 1);
+									
+							})
 							.append("title")  //Make tooltip
 							.text(function(d) {
 								return d.key;
 							});
-
-					//Click to fade out types
-					d3.select("g#types")
-						.on("click", function() {
-							d3.select(this)
-								.attr("opacity", 1)
-								.transition()
-								.duration(2000)
-								.attr("opacity", 0);
-						});
-
 				
 					//Create axes
 					svg.append("g")
