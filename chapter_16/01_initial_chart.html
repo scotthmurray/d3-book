@@ -194,12 +194,12 @@
 				
 					//Create axes
 					svg.append("g")
-						.attr("class", "axis")
+						.attr("class", "axis x")
 						.attr("transform", "translate(0," + (h - padding) + ")")
 						.call(xAxis);
 				
 					svg.append("g")
-						.attr("class", "axis")
+						.attr("class", "axis y")
 						.attr("transform", "translate(" + (w - padding * 2) + ",0)")
 						.call(yAxis);
 

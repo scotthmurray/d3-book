@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Types only</title>
+		<title>D3: Update axis</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 
@@ -38,6 +38,11 @@
 
 			//For converting Dates to strings
 			var formatTime = d3.timeFormat("%b %Y");
+			
+			//Define key function, to be used when binding data
+			var key = function(d) {
+				return d.key;
+			};
 
 			//Set up stack methods
 			var vehicleStack = d3.stack();
@@ -242,7 +247,7 @@
 					svg.append("g")
 						.attr("id", "vehicles")
 						.selectAll("path")
-						.data(vehicleSeries)
+						.data(vehicleSeries, key)
 						.enter()
 						.append("path")
 						.attr("class", "area")
@@ -285,7 +290,7 @@
 						svg.append("g")
 							.attr("id", "types")
 							.selectAll("path")
-							.data(typeSeries)
+							.data(typeSeries, key)
 							.enter()
 							.append("path")
 							.attr("class", "area")
@@ -315,21 +320,79 @@
 								
 								return color;
 							})
+							.on("click", function(d) {
+								
+								//Which type was clicked?
+								var thisType = d.key;
+								
+								//Generate a new data set with all-zero values, 
+								//except for this type's data
+								var thisTypeDataset = [];
+								
+								for (var i = 0; i < typeDataset.length; i++) {
+									thisTypeDataset[i] = {
+										date: 		typeDataset[i].date,
+										HEV:		0,
+										PHEV:		0,
+										BEV:		0,
+										FCEV:		0,
+										[thisType]:	typeDataset[i][thisType]  //Overwrites the appropriate zero value above
+									}
+								}
+								
+								// console.log(thisTypeDataset);
+								
+								//Stack the data (even though there's now just one "layer") and log it out
+								var thisTypeSeries = typeStack(thisTypeDataset);
+								// console.log(thisTypeSeries);
+								
+								//Bind the new data set to paths, overwriting old bound data.
+								var paths = d3.selectAll("#types path")
+									.data(thisTypeSeries, key);
+
+								//Transition areas into new positions (i.e., thisType's area
+								//will go to a zero baseline; all others will flatten out).
+								//
+								//Store this transition in a new variable for later reference.
+								var areaTransitions = paths.transition()
+									.duration(1000)
+									.attr("d", area);
+									
+								//Update scale
+								yScale.domain([
+										0,
+										d3.max(thisTypeDataset, function(d) {
+											var sum = 0;
+				
+											//Calculate the total (sum) of sales of this type,
+											//ignoring the others (for now)
+											sum += d[thisType];
+											
+											return sum;
+										})
+									]);
+
+								//Append this transition to the one already in progress
+								//(from above).  Transition areas to newly updated scale.
+								areaTransitions.transition()
+									.delay(200)
+									.on("start", function() {
+
+										//Transition axis to new scale at the same time
+										d3.select("g.axis.y")
+											.transition()
+											.duration(1000)
+											.call(yAxis);
+												
+									})
+									.duration(1000)
+									.attr("d", area);
+									
+							})
 							.append("title")  //Make tooltip
 							.text(function(d) {
 								return d.key;
 							});
-
-					//Click to fade out types
-					d3.select("g#types")
-						.on("click", function() {
-							d3.select(this)
-								.attr("opacity", 1)
-								.transition()
-								.duration(2000)
-								.attr("opacity", 0);
-						});
-
 				
 					//Create axes
 					svg.append("g")
