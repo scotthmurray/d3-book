@@ -378,7 +378,7 @@
 									.delay(200)
 									.on("start", function() {
 
-										//Transition axis to new scale at the same time
+										//Transition axis to new scale concurrently
 										d3.select("g.axis.y")
 											.transition()
 											.duration(1000)
