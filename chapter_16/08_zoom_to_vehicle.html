@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Types only</title>
+		<title>D3: Zoom to vehicle</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 
@@ -14,10 +14,15 @@
 
 			.area {
 				stroke: none;
+				cursor: pointer;
 			}
 
 			.area:hover {
 				fill: yellow;
+			}
+			
+			.area.unclickable {
+				pointer-events: none;
 			}
 
 		</style>
@@ -38,6 +43,11 @@
 
 			//For converting Dates to strings
 			var formatTime = d3.timeFormat("%b %Y");
+			
+			//Define key function, to be used when binding data
+			var key = function(d) {
+				return d.key;
+			};
 
 			//Set up stack methods
 			var vehicleStack = d3.stack();
@@ -104,23 +114,8 @@
 
 
 					//
-					// STACKING
+					// STACKING (removed here, now happens only after click…)
 					//
-
-					//Now that we know the column names in the data,
-					//get all the keys (make + model), but toss out 'date'
-					var keys = Object.keys(dataset[0]).slice(1);
-					// console.log(keys);
-					
-					//Tell stack function where to find the keys
-					vehicleStack.keys(keys)
-						.value(function value(d, key) {
-							return d[key].sales;
-						});
-
-					//Stack the data and log it out
-					var vehicleSeries = vehicleStack(dataset);
-					// console.log(vehicleSeries);
 					
 					
 					
@@ -177,7 +172,8 @@
 					//
 
 					//Tell stack function where to find the keys
-					typeStack.keys([ "HEV", "PHEV", "BEV", "FCEV" ]);
+					var types = [ "HEV", "PHEV", "BEV", "FCEV" ];
+					typeStack.keys(types);
 
 					//Stack the data and log it out
 					var typeSeries = typeStack(typeDataset);
@@ -200,13 +196,13 @@
 					yScale = d3.scaleLinear()
 								.domain([
 									0,
-									d3.max(dataset, function(d) {
+									d3.max(typeDataset, function(d) {
 										var sum = 0;
-			
+
 										//Loops once for each row, to calculate
 										//the total (sum) of sales of all vehicles
-										for (var i = 0; i < keys.length; i++) {
-											sum += d[keys[i]].sales;
+										for (var i = 0; i < types.length; i++) {
+											sum += d[types[i]];
 										};
 			
 										return sum;
@@ -239,56 +235,21 @@
 								.attr("height", h);
 				
 					//Create areas for individual VEHICLES
+					//
+					//(Removed here, now happens only after click…)
+					//
 					svg.append("g")
-						.attr("id", "vehicles")
-						.selectAll("path")
-						.data(vehicleSeries)
-						.enter()
-						.append("path")
-						.attr("class", "area")
-						.attr("d", area)
-						.attr("fill", function(d) {
-
-							//Which vehicle is this?
-							var thisKey = d.key;
-							
-							//What 'type' is this vehicle?
-							var thisType = d[0].data[thisKey].type;
-							// console.log(thisType);
-
-							//New color var
-							var color;
-							
-							switch (thisType) {
-								case "HEV":
-									color = d3.schemeCategory20[0];
-									break;
-								case "PHEV":
-									color = d3.schemeCategory20[1];
-									break;
-								case "BEV":
-									color = d3.schemeCategory20[2];
-									break;
-								case "FCEV":
-									color = d3.schemeCategory20[3];
-									break;
-							}
-							
-							return color;
-						})
-						.append("title")  //Make tooltip
-						.text(function(d) {
-							return d.key;
-						});
+						.attr("id", "vehicles");
 						
 					//Create areas for TYPES
 					svg.append("g")
 						.attr("id", "types")
 						.selectAll("path")
-						.data(typeSeries)
+						.data(typeSeries, key)
 						.enter()
 						.append("path")
 						.attr("class", "area")
+						.attr("opacity", 1)
 						.attr("d", area)
 						.attr("fill", function(d) {
 
@@ -315,21 +276,172 @@
 							
 							return color;
 						})
+						.on("click", function(d) {
+							
+							//
+							// TYPES
+							//
+							
+							//Which type was clicked?
+							var thisType = d.key;
+							
+							//Generate a new data set with all-zero values, 
+							//except for this type's data
+							var thisTypeDataset = [];
+							
+							for (var i = 0; i < typeDataset.length; i++) {
+								thisTypeDataset[i] = {
+									date: 		typeDataset[i].date,
+									HEV:		0,
+									PHEV:		0,
+									BEV:		0,
+									FCEV:		0,
+									[thisType]:	typeDataset[i][thisType]  //Overwrites the appropriate zero value above
+								}
+							}
+							
+							// console.log(thisTypeDataset);
+							
+							//Stack the data (even though there's now just one "layer") and log it out
+							var thisTypeSeries = typeStack(thisTypeDataset);
+							// console.log(thisTypeSeries);
+							
+							//Bind the new data set to paths, overwriting old bound data.
+							var paths = d3.selectAll("#types path")
+								.data(thisTypeSeries, key)
+								.classed("unclickable", "true");
+
+							//Transition areas into new positions (i.e., thisType's area
+							//will go to a zero baseline; all others will flatten out).
+							//
+							//Store this transition in a new variable for later reference.
+							var areaTransitions = paths.transition()
+								.duration(1000)
+								.attr("d", area);
+								
+							//Update scale
+							yScale.domain([
+									0,
+									d3.max(thisTypeDataset, function(d) {
+										var sum = 0;
+			
+										//Calculate the total (sum) of sales of this type,
+										//ignoring the others (for now)
+										sum += d[thisType];
+										
+										return sum;
+									})
+								]);
+
+							//Append this transition to the one already in progress
+							//(from above).  Transition areas to newly updated scale.
+							areaTransitions.transition()
+								.delay(200)
+								.on("start", function() {
+
+									//Transition axis to new scale concurrently
+									d3.select("g.axis.y")
+										.transition()
+										.duration(1000)
+										.call(yAxis);
+											
+								})
+								.duration(1000)
+								.attr("d", area)
+								.transition()
+								.on("start", function() {
+									//Make vehicles visible instantly, so 
+									//they are revealed when this fades out
+									d3.selectAll("g#vehicles path")
+										.attr("opacity", 1);
+								})
+								.duration(1000)
+								.attr("opacity", 0);
+
+							//
+							// VEHICLES
+							//
+
+							//Get all possible keys (make + model), but toss out 'date'
+							var keysAll = Object.keys(dataset[0]).slice(1);
+							// console.log(keysAll);
+							
+							//Loop once for each key, and save out just the ones of thisType (e.g. BEVs)
+							var keysOfThisType = [];
+							for (var i = 0; i < keysAll.length; i++) {
+								if (dataset[0][keysAll[i]].type == thisType) {
+									keysOfThisType.push(keysAll[i]);
+								}
+							}
+							// console.log(keysOfThisType);
+							
+							//Give the new keys to the stack function
+							vehicleStack.keys(keysOfThisType)
+								.value(function value(d, key) {
+									return d[key].sales;
+								});
+
+							//Stack the data and log it out
+							var vehicleSeries = vehicleStack(dataset);
+							// console.log(vehicleSeries);
+
+							//Create areas for individual VEHICLES
+							svg.select("g#vehicles")
+								.selectAll("path")
+								.data(vehicleSeries, key)
+								.enter()
+								.append("path")
+								.attr("class", "area")
+								.attr("opacity", 0)
+								.attr("d", area)
+								.attr("fill", function(d, i) {
+
+									//Which vehicle is this?
+									var thisKey = d.key;
+									
+									//What 'type' is this vehicle?
+									var thisType = d[0].data[thisKey].type;
+									// console.log(thisType);
+
+									//Used to find a cool color below
+									var spread = 0.2;
+									var startingPoint;
+
+									//Choose where in the color spectrum we start, based on type
+									switch (thisType) {
+										case "HEV":
+											startingPoint = 0;
+											break;
+										case "PHEV":
+											startingPoint = 0.2;
+											break;
+										case "BEV":
+											startingPoint = 0.4;
+											break;
+										case "FCEV":
+											startingPoint = 0.6;
+											break;
+									}
+
+									//How many cars?
+									var numVehicles = keysOfThisType.length;
+									
+									//Get a value between 0.0 and 1.0
+									var normalized = startingPoint + ((i / numVehicles) * spread);
+
+									//Get that color on the spectrum
+									return d3.interpolateCool(normalized);
+								})
+								.append("title")  //Make tooltip
+								.text(function(d) {
+									return d.key;
+								});					
+
+						})
 						.append("title")  //Make tooltip
 						.text(function(d) {
 							return d.key;
 						});
-
-					//Click to fade out types
-					d3.select("g#types")
-						.on("click", function() {
-							d3.select(this)
-								.attr("opacity", 1)
-								.transition()
-								.duration(2000)
-								.attr("opacity", 0);
-						});
-
 				
 					//Create axes
 					svg.append("g")

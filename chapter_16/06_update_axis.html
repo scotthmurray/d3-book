@@ -286,113 +286,113 @@
 							return d.key;
 						});
 						
-						//Create areas for TYPES
-						svg.append("g")
-							.attr("id", "types")
-							.selectAll("path")
-							.data(typeSeries, key)
-							.enter()
-							.append("path")
-							.attr("class", "area")
-							.attr("d", area)
-							.attr("fill", function(d) {
+					//Create areas for TYPES
+					svg.append("g")
+						.attr("id", "types")
+						.selectAll("path")
+						.data(typeSeries, key)
+						.enter()
+						.append("path")
+						.attr("class", "area")
+						.attr("d", area)
+						.attr("fill", function(d) {
 
-								//Which type is this?
-								var thisType = d.key;
-								
-								//New color var
-								var color;
+							//Which type is this?
+							var thisType = d.key;
+							
+							//New color var
+							var color;
 
-								switch (thisType) {
-									case "HEV":
-										color = "rgb(110, 64, 170)";
-										break;
-									case "PHEV":
-										color = "rgb(76, 110, 219)";
-										break;
-									case "BEV":
-										color = "rgb(35, 171, 216)";
-										break;
-									case "FCEV":
-										color = "rgb(29, 223, 163)";
-										break;
+							switch (thisType) {
+								case "HEV":
+									color = "rgb(110, 64, 170)";
+									break;
+								case "PHEV":
+									color = "rgb(76, 110, 219)";
+									break;
+								case "BEV":
+									color = "rgb(35, 171, 216)";
+									break;
+								case "FCEV":
+									color = "rgb(29, 223, 163)";
+									break;
+							}
+							
+							return color;
+						})
+						.on("click", function(d) {
+							
+							//Which type was clicked?
+							var thisType = d.key;
+							
+							//Generate a new data set with all-zero values, 
+							//except for this type's data
+							var thisTypeDataset = [];
+							
+							for (var i = 0; i < typeDataset.length; i++) {
+								thisTypeDataset[i] = {
+									date: 		typeDataset[i].date,
+									HEV:		0,
+									PHEV:		0,
+									BEV:		0,
+									FCEV:		0,
+									[thisType]:	typeDataset[i][thisType]  //Overwrites the appropriate zero value above
 								}
-								
-								return color;
-							})
-							.on("click", function(d) {
-								
-								//Which type was clicked?
-								var thisType = d.key;
-								
-								//Generate a new data set with all-zero values, 
-								//except for this type's data
-								var thisTypeDataset = [];
-								
-								for (var i = 0; i < typeDataset.length; i++) {
-									thisTypeDataset[i] = {
-										date: 		typeDataset[i].date,
-										HEV:		0,
-										PHEV:		0,
-										BEV:		0,
-										FCEV:		0,
-										[thisType]:	typeDataset[i][thisType]  //Overwrites the appropriate zero value above
-									}
-								}
-								
-								// console.log(thisTypeDataset);
-								
-								//Stack the data (even though there's now just one "layer") and log it out
-								var thisTypeSeries = typeStack(thisTypeDataset);
-								// console.log(thisTypeSeries);
-								
-								//Bind the new data set to paths, overwriting old bound data.
-								var paths = d3.selectAll("#types path")
-									.data(thisTypeSeries, key);
+							}
+							
+							// console.log(thisTypeDataset);
+							
+							//Stack the data (even though there's now just one "layer") and log it out
+							var thisTypeSeries = typeStack(thisTypeDataset);
+							// console.log(thisTypeSeries);
+							
+							//Bind the new data set to paths, overwriting old bound data.
+							var paths = d3.selectAll("#types path")
+								.data(thisTypeSeries, key);
 
-								//Transition areas into new positions (i.e., thisType's area
-								//will go to a zero baseline; all others will flatten out).
-								//
-								//Store this transition in a new variable for later reference.
-								var areaTransitions = paths.transition()
-									.duration(1000)
-									.attr("d", area);
-									
-								//Update scale
-								yScale.domain([
-										0,
-										d3.max(thisTypeDataset, function(d) {
-											var sum = 0;
-				
-											//Calculate the total (sum) of sales of this type,
-											//ignoring the others (for now)
-											sum += d[thisType];
-											
-											return sum;
-										})
-									]);
-
-								//Append this transition to the one already in progress
-								//(from above).  Transition areas to newly updated scale.
-								areaTransitions.transition()
-									.delay(200)
-									.on("start", function() {
-
-										//Transition axis to new scale concurrently
-										d3.select("g.axis.y")
-											.transition()
-											.duration(1000)
-											.call(yAxis);
-												
+							//Transition areas into new positions (i.e., thisType's area
+							//will go to a zero baseline; all others will flatten out).
+							//
+							//Store this transition in a new variable for later reference.
+							var areaTransitions = paths.transition()
+								.duration(1000)
+								.attr("d", area);
+								
+							//Update scale
+							yScale.domain([
+									0,
+									d3.max(thisTypeDataset, function(d) {
+										var sum = 0;
+			
+										//Calculate the total (sum) of sales of this type,
+										//ignoring the others (for now)
+										sum += d[thisType];
+										
+										return sum;
 									})
-									.duration(1000)
-									.attr("d", area);
-									
-							})
-							.append("title")  //Make tooltip
-							.text(function(d) {
-								return d.key;
-							});
+								]);
+
+							//Append this transition to the one already in progress
+							//(from above).  Transition areas to newly updated scale.
+							areaTransitions.transition()
+								.delay(200)
+								.on("start", function() {
+
+									//Transition axis to new scale concurrently
+									d3.select("g.axis.y")
+										.transition()
+										.duration(1000)
+										.call(yAxis);
+											
+								})
+								.duration(1000)
+								.attr("d", area);
+								
+						})
+						.append("title")  //Make tooltip
+						.text(function(d) {
+							return d.key;
+						});
 				
 					//Create axes
 					svg.append("g")
