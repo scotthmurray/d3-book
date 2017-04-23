@@ -432,6 +432,211 @@
 									//Get that color on the spectrum
 									return d3.interpolateCool(normalized);
 								})
+//xxxx
+								.on("click", function(d) {
+
+									//Which vehicle was clicked?
+									var thisType = d.key;
+									console.log("You clicked " + d.key);
+
+									//Fade out all other vehicle areas
+									d3.selectAll("g#vehicles path")
+										.filter(function(d) {  //Filter out 'this' one
+											if (d.key !== thisType) {
+												return true;
+											}
+										})
+										.transition()
+										.duration(1000)
+										.attr("opacity", 0);
+
+									//Zero-out baseline values, then transitioned into place.
+									
+									//Define area generator that will be used just this one time
+									var singleVehicleArea = d3.area()
+										.x(function(d) { return xScale(d.data.date); })
+										.y0(function(d) { return yScale(0); })  //Note zero baseline
+										.y1(function(d) { return yScale(d.data[thisType].sales); });
+										//Note y1 uses the raw 'sales' value for 'this' vehicle,
+										//not the stacked data values (e.g., d[0] or d[1]).
+
+									d3.select(this)
+										.transition()
+										.delay(1000)
+										.duration(1000)
+										.attr("d", singleVehicleArea);
+									
+									
+									
+									// * A new y scale domain, based on the sales for this vehicle only, is calculated and set.
+									// * The clicked area and y axis are transitioned into place, to fit the new domain.
+
+									
+									
+									
+									
+									// //Generate a new data set with all-zero values, 
+									// //except for this vehicle's data
+									// var thisVehicleDataset = [];
+									// 
+									// for (var i = 0; i < typeDataset.length; i++) {
+									// 	thisVehicleDataset[i] = {
+									// 		date: 		typeDataset[i].date,
+									// 		HEV:		0,
+									// 		PHEV:		0,
+									// 		BEV:		0,
+									// 		FCEV:		0,
+									// 		[thisType]:	typeDataset[i][thisType]  //Overwrites the appropriate zero value above
+									// 	}
+									// }
+									// 
+									// // console.log(thisTypeDataset);
+									// 
+									// //Stack the data (even though there's now just one "layer") and log it out
+									// var thisTypeSeries = typeStack(thisTypeDataset);
+									// // console.log(thisTypeSeries);
+									// 
+									// //Bind the new data set to paths, overwriting old bound data.
+									// var paths = d3.selectAll("#types path")
+									// 	.data(thisTypeSeries, key)
+									// 	.classed("unclickable", "true");
+									// 
+									// //Transition areas into new positions (i.e., thisType's area
+									// //will go to a zero baseline; all others will flatten out).
+									// //
+									// //Store this transition in a new variable for later reference.
+									// var areaTransitions = paths.transition()
+									// 	.duration(1000)
+									// 	.attr("d", area);
+									// 	
+									// //Update scale
+									// yScale.domain([
+									// 		0,
+									// 		d3.max(thisTypeDataset, function(d) {
+									// 			var sum = 0;
+									// 
+									// 			//Calculate the total (sum) of sales of this type,
+									// 			//ignoring the others (for now)
+									// 			sum += d[thisType];
+									// 			
+									// 			return sum;
+									// 		})
+									// 	]);
+									// 
+									// //Append this transition to the one already in progress
+									// //(from above).  Transition areas to newly updated scale.
+									// areaTransitions.transition()
+									// 	.delay(200)
+									// 	.on("start", function() {
+									// 
+									// 		//Transition axis to new scale concurrently
+									// 		d3.select("g.axis.y")
+									// 			.transition()
+									// 			.duration(1000)
+									// 			.call(yAxis);
+									// 				
+									// 	})
+									// 	.duration(1000)
+									// 	.attr("d", area)
+									// 	.transition()
+									// 	.on("start", function() {
+									// 		//Make vehicles visible instantly, so 
+									// 		//they are revealed when this fades out
+									// 		d3.selectAll("g#vehicles path")
+									// 			.attr("opacity", 1);
+									// 	})
+									// 	.duration(1000)
+									// 	.attr("opacity", 0);
+
+
+
+									//
+									// VEHICLES
+									//
+
+									// //Get all possible keys (make + model), but toss out 'date'
+									// var keysAll = Object.keys(dataset[0]).slice(1);
+									// // console.log(keysAll);
+									// 
+									// //Loop once for each key, and save out just the ones of thisType (e.g. BEVs)
+									// var keysOfThisType = [];
+									// for (var i = 0; i < keysAll.length; i++) {
+									// 	if (dataset[0][keysAll[i]].type == thisType) {
+									// 		keysOfThisType.push(keysAll[i]);
+									// 	}
+									// }
+									// // console.log(keysOfThisType);
+									// 
+									// //Give the new keys to the stack function
+									// vehicleStack.keys(keysOfThisType)
+									// 	.value(function value(d, key) {
+									// 		return d[key].sales;
+									// 	});
+									// 
+									// //Stack the data and log it out
+									// var vehicleSeries = vehicleStack(dataset);
+									// // console.log(vehicleSeries);
+									// 
+									// //Create areas for individual VEHICLES
+									// svg.select("g#vehicles")
+									// 	.selectAll("path")
+									// 	.data(vehicleSeries, key)
+									// 	.enter()
+									// 	.append("path")
+									// 	.attr("class", "area")
+									// 	.attr("opacity", 0)
+									// 	.attr("d", area)
+									// 	.attr("fill", function(d, i) {
+									// 
+									// 		//Which vehicle is this?
+									// 		var thisKey = d.key;
+									// 		
+									// 		//What 'type' is this vehicle?
+									// 		var thisType = d[0].data[thisKey].type;
+									// 		// console.log(thisType);
+									// 
+									// 		//Used to find a cool color below
+									// 		var spread = 0.2;
+									// 		var startingPoint;
+									// 
+									// 		//Choose where in the color spectrum we start, based on type
+									// 		switch (thisType) {
+									// 			case "HEV":
+									// 				startingPoint = 0;
+									// 				break;
+									// 			case "PHEV":
+									// 				startingPoint = 0.2;
+									// 				break;
+									// 			case "BEV":
+									// 				startingPoint = 0.4;
+									// 				break;
+									// 			case "FCEV":
+									// 				startingPoint = 0.6;
+									// 				break;
+									// 		}
+									// 
+									// 		//How many cars?
+									// 		var numVehicles = keysOfThisType.length;
+									// 		
+									// 		//Get a value between 0.0 and 1.0
+									// 		var normalized = startingPoint + ((i / numVehicles) * spread);
+									// 
+									// 		//Get that color on the spectrum
+									// 		return d3.interpolateCool(normalized);
+									// 	})
+									// 	.append("title")  //Make tooltip
+									// 	.text(function(d) {
+									// 		return d.key;
+									// 	});					
+
+//xxxxx
+
+
+
+
+
+
+								})
 								.append("title")  //Make tooltip
 								.text(function(d) {
 									return d.key;
