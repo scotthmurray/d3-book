@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Using each() to specify two transitions in sequence</title>
+		<title>D3: Using on() to specify two transitions in sequence</title>
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 			/* No style rules here yet */
@@ -115,10 +115,13 @@
 					   .attr("cy", function(d) {
 					   		return yScale(d[1]);
 					   })
-					   .transition()
-					   .duration(1000)
-					   .attr("fill", "black")
-					   .attr("r", 2);
+					   .on("end", function() {
+						   d3.select(this)
+						     .transition()
+						     .duration(1000)
+						     .attr("fill", "black")
+						     .attr("r", 2);
+					   });
 
 					//Update X axis
 					svg.select(".x.axis")
