@@ -11,5 +11,6 @@ As accessed on March 14, 2017 from:
 https://energy.gov/sites/prod/files/2013/07/f2/062010-092013_EV_HEV%20Sales.xlsx
 
 Source pages and more info:
-https://energy.gov/downloads/electric-and-hybrid-electric-vehicle-sales-december-2010-june-2013
-https://energy.gov/articles/visualizing-electric-vehicle-sales
+
+- https://energy.gov/downloads/electric-and-hybrid-electric-vehicle-sales-december-2010-june-2013
+- https://energy.gov/articles/visualizing-electric-vehicle-sales
