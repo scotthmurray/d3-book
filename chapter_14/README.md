@@ -29,6 +29,6 @@ Special thanks to Jeff Weiss for manually verifying and correcting coordinates w
 Source: U.S. Census Bureau, Population Division
 Release Date: May 2016
 
-https://www.census.gov/data/tables/2015/demo/popest/total-cities-and-towns.html
+https://factfinder.census.gov/bkmk/table/1.0/en/PEP/2015/PEPANNRSIP.US12A
 
 
