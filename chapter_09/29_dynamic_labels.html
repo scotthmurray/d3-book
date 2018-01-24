@@ -189,7 +189,7 @@
 							return d.value;
 						})
 						.attr("text-anchor", "middle")
-						.attr("x", w)
+						.attr("x", w + xScale.bandwidth() / 2)
 						.attr("y", function(d) {
 							return h - yScale(d.value) + 14;
 						})						
