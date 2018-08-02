@@ -33,7 +33,8 @@
 			}
 
 			//Load in the data
-			d3.csv("time_scale_data.csv", rowConverter, function(data) {
+			d3.csv("time_scale_data.csv", rowConverter)
+				.then(function(data) {
 
 				//Copy data into global dataset
 				dataset = data;
