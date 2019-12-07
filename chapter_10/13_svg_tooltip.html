@@ -18,7 +18,7 @@
 			//Width and height
 			var w = 600;
 			var h = 250;
-			
+
 			var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
 							11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
 
@@ -30,7 +30,7 @@
 			var yScale = d3.scaleLinear()
 							.domain([0, d3.max(dataset)])
 							.range([0, h]);
-			
+
 			//Create SVG element
 			var svg = d3.select("body")
 						.append("svg")
@@ -75,10 +75,10 @@
 
 			   })
 			   .on("mouseout", function() {
-			   
+
 					//Remove the tooltip
-					d3.select("#tooltip").remove();
-					
+					d3.selectAll("#tooltip").remove();
+
 			   })
 			   .on("click", function() {
 			   		sortBars();
@@ -86,7 +86,7 @@
 
 			//Define sort order flag
 			var sortOrder = false;
-			
+
 			//Define sort function
 			var sortBars = function() {
 
@@ -110,8 +110,8 @@
 				   		return xScale(i);
 				   });
 
-			};			
-			
+			};
+
 		</script>
 	</body>
 </html>
