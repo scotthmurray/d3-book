@@ -3,9 +3,7 @@
 These are sample code files to accompany the book “Interactive Data Visualization for the Web, Second Edition” by Scott Murray, published in July 2017 by O’Reilly.
 
 - [O’Reilly book page](http://shop.oreilly.com/product/0636920037316.do)
-- [Author’s website](http://alignedleft.com/)
-
-Always find the latest book info at: [d3book.com](http://d3book.com)
+- [Author’s website](http://scottmurray.org/)
 
 
 
